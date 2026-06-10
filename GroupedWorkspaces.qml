@@ -63,6 +63,7 @@ Row {
 
                         MouseArea {
                             anchors.fill: parent
+                            cursorShape: Qt.PointingHandCursor
                             acceptedButtons: Qt.LeftButton | Qt.MiddleButton
                             onClicked: mouse => {
                                 if (icon.modelData.wayland === null)
@@ -82,6 +83,7 @@ Row {
             MouseArea {
                 anchors.fill: parent
                 z: -1
+                cursorShape: Qt.PointingHandCursor
                 onClicked: group.modelData.activate()
             }
         }

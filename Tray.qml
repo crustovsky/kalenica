@@ -35,6 +35,7 @@ BarItem {
 
             MouseArea {
                 anchors.fill: parent
+                cursorShape: Qt.PointingHandCursor
                 acceptedButtons: Qt.LeftButton | Qt.RightButton
                 onClicked: mouse => {
                     if (mouse.button === Qt.LeftButton && !trayItem.modelData.onlyMenu)

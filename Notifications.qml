@@ -80,6 +80,7 @@ Scope {
 
                     MouseArea {
                         anchors.fill: parent
+                        cursorShape: Qt.PointingHandCursor
                         acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
                         onClicked: mouse => {
                             if (mouse.button === Qt.LeftButton) {
@@ -180,6 +181,7 @@ Scope {
 
                                         MouseArea {
                                             anchors.fill: parent
+                                            cursorShape: Qt.PointingHandCursor
                                             onClicked: {
                                                 actionButton.modelData.invoke();
                                                 card.modelData.dismiss();

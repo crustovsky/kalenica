@@ -85,6 +85,7 @@ PopupWindow {
 
                     MouseArea {
                         anchors.fill: parent
+                        cursorShape: Qt.PointingHandCursor
                         onClicked: {
                             if (root.sinks)
                                 Pipewire.preferredDefaultAudioSink = row.modelData;

@@ -3,6 +3,7 @@ import Quickshell.Services.UPower
 
 BarItem {
     id: root
+    clickable: false
 
     readonly property var device: UPower.displayDevice
     readonly property int pct: Math.round(device.percentage * 100)

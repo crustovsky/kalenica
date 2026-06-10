@@ -4,6 +4,7 @@ import Quickshell.Io
 
 BarItem {
     id: root
+    clickable: false
 
     property int percent: 0
     property bool available: true

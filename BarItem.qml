@@ -9,6 +9,8 @@ Rectangle {
     default property alias content: inner.data
     property alias spacing: inner.spacing
     property string tooltip: ""
+    // display-only modules opt out of the hand cursor
+    property bool clickable: true
     signal clicked()
     signal rightClicked()
     signal middleClicked()
@@ -32,6 +34,7 @@ Rectangle {
         id: mouse
         anchors.fill: parent
         hoverEnabled: true
+        cursorShape: root.clickable ? Qt.PointingHandCursor : Qt.ArrowCursor
         acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
         onClicked: mouse => {
             if (mouse.button === Qt.LeftButton)

@@ -3,6 +3,7 @@ import Quickshell
 
 BarItem {
     id: root
+    clickable: false
 
     SystemClock {
         id: clock
