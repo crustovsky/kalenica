@@ -17,7 +17,7 @@ BarItem {
 
     // capped like ActiveWindow so long tracks elide instead of overlapping
     Item {
-        property real maxWidth: 360
+        property real maxWidth: 270
         implicitWidth: Math.min(songText.implicitWidth, maxWidth)
         implicitHeight: songText.implicitHeight
         anchors.verticalCenter: parent.verticalCenter
