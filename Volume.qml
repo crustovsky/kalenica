@@ -12,9 +12,14 @@ BarItem {
 
     PwObjectTracker { objects: [Pipewire.defaultAudioSink] }
 
+    AudioDevicePopup {
+        id: outputs
+        sinks: true
+        anchorItem: root
+    }
+
     tooltip: sink !== null ? (sink.description || sink.name) : ""
-    onClicked: Quickshell.execDetached(
-        ["vicinae", "vicinae://launch/@rastsislaux/store.vicinae.pulseaudio/outputDevices"])
+    onClicked: outputs.toggle()
     onRightClicked: Quickshell.execDetached(["kitty", "--class", "Cava", "cava"])
     onScrolled: delta => {
         if (sink !== null && sink.audio !== null)

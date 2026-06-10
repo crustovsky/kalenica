@@ -12,8 +12,13 @@ BarItem {
 
     PwObjectTracker { objects: [Pipewire.defaultAudioSource] }
 
-    onClicked: Quickshell.execDetached(
-        ["vicinae", "vicinae://launch/@rastsislaux/store.vicinae.pulseaudio/inputDevices"])
+    AudioDevicePopup {
+        id: inputs
+        sinks: false
+        anchorItem: root
+    }
+
+    onClicked: inputs.toggle()
     onScrolled: delta => {
         if (source !== null && source.audio !== null)
             source.audio.volume = Math.max(0, Math.min(1, source.audio.volume + delta * 0.01));
