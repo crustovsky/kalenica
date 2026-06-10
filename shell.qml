@@ -15,6 +15,14 @@ ShellRoot {
 
     Notifications {}
 
+    Osd {
+        id: osd
+    }
+
+    BrightnessControl {
+        osd: osd
+    }
+
     // toggle with: qs ipc call bar toggle
     IpcHandler {
         target: "bar"

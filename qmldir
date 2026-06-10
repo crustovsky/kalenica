@@ -1,0 +1,24 @@
+singleton Theme 1.0 Theme.qml
+ActiveWindow 1.0 ActiveWindow.qml
+Backlight 1.0 Backlight.qml
+Bar 1.0 Bar.qml
+BarItem 1.0 BarItem.qml
+BarText 1.0 BarText.qml
+Battery 1.0 Battery.qml
+BrightnessControl 1.0 BrightnessControl.qml
+BluetoothStatus 1.0 BluetoothStatus.qml
+ClockItem 1.0 ClockItem.qml
+ConfirmDialog 1.0 ConfirmDialog.qml
+Cpu 1.0 Cpu.qml
+Drawer 1.0 Drawer.qml
+GroupedWorkspaces 1.0 GroupedWorkspaces.qml
+Media 1.0 Media.qml
+Memory 1.0 Memory.qml
+Microphone 1.0 Microphone.qml
+NetworkStatus 1.0 NetworkStatus.qml
+Osd 1.0 Osd.qml
+Notifications 1.0 Notifications.qml
+PowerMenu 1.0 PowerMenu.qml
+PowerMode 1.0 PowerMode.qml
+Tray 1.0 Tray.qml
+Volume 1.0 Volume.qml

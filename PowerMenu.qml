@@ -12,9 +12,11 @@ Drawer {
         enabled: root.inhibitIdle
     }
 
+    ConfirmDialog { id: confirm }
+
     BarItem {
         id: shutdown
-        onClicked: Quickshell.execDetached(["vicinae", "vicinae://launch/power/power-off"])
+        onClicked: confirm.ask("Shutdown the system?", ["systemctl", "poweroff"])
         BarText { color: shutdown.fg; text: "⏻ " }
     }
     BarItem {
@@ -25,12 +27,12 @@ Drawer {
     }
     BarItem {
         id: reboot
-        onClicked: Quickshell.execDetached(["vicinae", "vicinae://launch/power/reboot"])
+        onClicked: confirm.ask("Reboot the system?", ["systemctl", "reboot"])
         BarText { color: reboot.fg; text: "⭮" }
     }
     BarItem {
         id: suspend
-        onClicked: Quickshell.execDetached(["vicinae", "vicinae://launch/power/suspend"])
+        onClicked: confirm.ask("Suspend the system?", ["systemctl", "suspend"])
         BarText { color: suspend.fg; text: "⏾" }
     }
     BarItem {
