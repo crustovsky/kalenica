@@ -3,10 +3,8 @@ import QtQuick
 import Quickshell
 
 // Month-overview calendar on clock hover: today highlighted, Monday-first
-// rows with ISO week numbers, scroll (on the clock or the popup) flips
-// months. Display only — no events, Fastmail/Thunderbird stay the real
-// calendars. Same hover-bridging as tooltips: short show delay, short grace
-// before hiding so the mouse can cross the gap into the popup.
+// rows with ISO week numbers, scroll flips months. Display only — no events.
+// Show delay and hide grace bridge the mouse gap between bar and popup.
 PopupWindow {
     id: root
 

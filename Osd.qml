@@ -110,8 +110,7 @@ Scope {
             showMic();
     }
 
-    // Kbd backlight: the non-consuming keybind calls `qs ipc call osd
-    // kbdlight`; the EC cycles the level itself, we read it back after a beat.
+    // Kbd backlight: the non-consuming keybind calls `qs ipc call osd kbdlight`.
     IpcHandler {
         target: "osd"
 
@@ -199,13 +198,13 @@ Scope {
                     width: 160
                     height: 6
                     radius: 3
-                    color: Theme.osdTrack
+                    color: Theme.fgFaint
 
                     Rectangle {
                         width: parent.width * root.value
                         height: parent.height
                         radius: parent.radius
-                        color: root.dimmed ? Theme.osdTrack : Theme.notifFg
+                        color: root.dimmed ? Theme.fgFaint : Theme.notifFg
                     }
                 }
 

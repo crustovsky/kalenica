@@ -21,10 +21,8 @@ Singleton {
     readonly property color notifBorder: "#a6adc8"
     readonly property color notifBorderCritical: "#fab387"
 
-    // OSD progress bar track (and fill when muted).
-    readonly property color osdTrack: Qt.alpha("#cdd6f4", 0.25)
-
-    readonly property color separator: Qt.alpha("#cdd6f4", 0.25)
+    // faint fg: separators, OSD track (and fill when muted)
+    readonly property color fgFaint: Qt.alpha("#cdd6f4", 0.25)
     // de-emphasized text (calendar week numbers / weekday header)
     readonly property color fgDim: Qt.alpha("#cdd6f4", 0.4)
 

@@ -10,10 +10,9 @@ BarItem {
 
     visible: adapter !== null
     tooltip: {
-        const adapter = root.adapter;
         if (adapter === null)
             return "";
-        if (!adapter.enabled)
+        if (btOff)
             return `${adapter.name}\noff`;
         let lines = [`${adapter.name}\n${connectedDevices.length} connected`];
         for (const dev of connectedDevices)

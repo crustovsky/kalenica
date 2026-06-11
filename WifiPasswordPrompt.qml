@@ -3,14 +3,10 @@ import QtQuick
 import Quickshell
 import Quickshell.Wayland
 
-// Centered password prompt for secured unknown wifi networks (replaces the
-// vicinae wifi-commander fallback). Same modal mechanics as ConfirmDialog:
-// unanchored overlay PanelWindow, exclusive keyboard focus while visible —
-// keyboard input can't go into the anchored network popup itself (layer
-// popups never get keyboard focus). Enter connects via connectWithPsk, Esc
-// cancels, the eye button toggles password visibility. Stays open through
-// the attempt: closes itself on success, keeps the text for editing on a
-// wrong password.
+// Centered password prompt for secured unknown wifi networks, modal like
+// ConfirmDialog (a separate window because layer popups never get keyboard
+// focus). Enter/Connect tries connectWithPsk and stays open: closes itself
+// on success, keeps the text for editing on a wrong password.
 Item {
     id: root
 

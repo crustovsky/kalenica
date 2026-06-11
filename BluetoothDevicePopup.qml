@@ -172,7 +172,7 @@ PopupWindow {
                 width: column.width - 16
                 height: 1
                 anchors.horizontalCenter: parent.horizontalCenter
-                color: Theme.separator
+                color: Theme.fgFaint
             }
 
             Rectangle {
