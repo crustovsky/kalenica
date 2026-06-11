@@ -59,8 +59,8 @@ PanelWindow {
             Backlight {}
         }
         Drawer {
-            Volume {}
-            Microphone {}
+            AudioControl {}
+            AudioControl { sinks: false }
         }
         Media {}
         Tray {}
