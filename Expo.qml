@@ -41,9 +41,11 @@ Scope {
 
     function activateSelected() {
         const t = windows[selected];
+        // close first: activating while the panel still holds exclusive
+        // focus gets undone when the unmap hands focus back
+        shown = false;
         if (t !== undefined && t.wayland !== null)
             t.wayland.activate();
-        shown = false;
     }
 
     IpcHandler {
