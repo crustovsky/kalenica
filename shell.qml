@@ -25,6 +25,9 @@ ShellRoot {
         osd: osd
     }
 
+    // toggle with: qs ipc call expo toggle
+    Expo {}
+
     // toggle with: qs ipc call bar toggle
     IpcHandler {
         target: "bar"
