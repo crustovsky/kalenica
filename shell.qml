@@ -1,3 +1,5 @@
+//@ pragma UseQApplication
+// required for tray menus (QsMenuAnchor); pragma changes need a restart
 import Quickshell
 import Quickshell.Io
 
