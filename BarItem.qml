@@ -33,6 +33,9 @@ Rectangle {
     MouseArea {
         id: mouse
         anchors.fill: parent
+        // under the content, like the workspace pills: clicks must reach
+        // mouse areas inside content (tray icons) first
+        z: -1
         hoverEnabled: true
         cursorShape: root.clickable ? Qt.PointingHandCursor : Qt.ArrowCursor
         acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
