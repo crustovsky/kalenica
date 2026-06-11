@@ -7,6 +7,7 @@ Bar 1.0 Bar.qml
 BarItem 1.0 BarItem.qml
 BarText 1.0 BarText.qml
 Battery 1.0 Battery.qml
+CalendarPopup 1.0 CalendarPopup.qml
 BrightnessControl 1.0 BrightnessControl.qml
 BluetoothStatus 1.0 BluetoothStatus.qml
 ClockItem 1.0 ClockItem.qml

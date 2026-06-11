@@ -10,8 +10,13 @@ BarItem {
         precision: SystemClock.Seconds
     }
 
-    // Month calendar on hover is planned as a popup later; plain date for now.
-    tooltip: Qt.formatDate(clock.date, "dddd, d MMMM yyyy")
+    onScrolled: delta => cal.flip(delta)
+
+    CalendarPopup {
+        id: cal
+        anchorItem: root
+        anchorHovered: root.hovered
+    }
 
     BarText {
         color: root.fg

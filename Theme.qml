@@ -25,6 +25,8 @@ Singleton {
     readonly property color osdTrack: Qt.alpha("#cdd6f4", 0.25)
 
     readonly property color separator: Qt.alpha("#cdd6f4", 0.25)
+    // de-emphasized text (calendar week numbers / weekday header)
+    readonly property color fgDim: Qt.alpha("#cdd6f4", 0.4)
 
     readonly property string fontFamily: "Iosevka Nerd Font"
     readonly property int fontSize: 14
