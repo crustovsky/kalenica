@@ -1,5 +1,4 @@
 import QtQuick
-import Quickshell
 import Quickshell.Io
 import Quickshell.Networking
 
@@ -35,7 +34,7 @@ BarItem {
 
     tooltip: {
         if (device === null)
-            return "Disconnected";
+            return Networking.wifiEnabled ? "Disconnected" : "Wifi off";
         let lines = [` ${fmtRate(rxRate)}   ${fmtRate(txRate)}`];
         lines.push(`Network: ${net !== null ? net.name : device.name}`);
         if (net !== null && device.type === DeviceType.Wifi) {
@@ -47,8 +46,22 @@ BarItem {
             lines.push(ipInfo);
         return lines.join("\n");
     }
-    onClicked: Quickshell.execDetached(
-        ["vicinae", "vicinae://launch/@dagimg-dot/store.vicinae.wifi-commander/scan-wifi"])
+    // left click on a disabled radio re-enables it; right click switches off
+    onClicked: {
+        if (!Networking.wifiEnabled)
+            Networking.wifiEnabled = true;
+        else
+            wifiPopup.toggle();
+    }
+    onRightClicked: {
+        wifiPopup.visible = false;
+        Networking.wifiEnabled = false;
+    }
+
+    WifiNetworkPopup {
+        id: wifiPopup
+        anchorItem: root
+    }
 
     FileView {
         id: rxBytes

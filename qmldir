@@ -24,3 +24,4 @@ PowerMenu 1.0 PowerMenu.qml
 PowerMode 1.0 PowerMode.qml
 Tray 1.0 Tray.qml
 Volume 1.0 Volume.qml
+WifiNetworkPopup 1.0 WifiNetworkPopup.qml
