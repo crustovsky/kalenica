@@ -5,13 +5,14 @@ import Quickshell.Networking
 
 // Anchored wifi network list for the network bar item: known/open networks
 // connect on click, the connected one disconnects, secured unknown ones
-// (lock marker) deep-link to vicinae for the password. Actively scans while
-// open. Closes when the mouse stays away (no HyprlandFocusGrab: it eats
-// clicks into popup child surfaces, see CLAUDE.md).
+// (lock marker) open the password prompt. Actively scans while open. Closes
+// when the mouse stays away (no HyprlandFocusGrab: it eats clicks into
+// popup child surfaces, see CLAUDE.md).
 PopupWindow {
     id: root
 
     required property Item anchorItem
+    required property var passwordPrompt
 
     readonly property var wifiDevice: Networking.devices.values.find(
         d => d.type === DeviceType.Wifi) ?? null
@@ -141,8 +142,7 @@ PopupWindow {
                             if (row.modelData.connected) {
                                 row.modelData.disconnect();
                             } else if (row.needsKey) {
-                                Quickshell.execDetached(["vicinae",
-                                    "vicinae://launch/@dagimg-dot/store.vicinae.wifi-commander/scan-wifi"]);
+                                root.passwordPrompt.ask(row.modelData);
                                 root.visible = false;
                             } else {
                                 root.failedNet = null;

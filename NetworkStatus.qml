@@ -61,7 +61,10 @@ BarItem {
     WifiNetworkPopup {
         id: wifiPopup
         anchorItem: root
+        passwordPrompt: pskPrompt
     }
+
+    WifiPasswordPrompt { id: pskPrompt }
 
     FileView {
         id: rxBytes
