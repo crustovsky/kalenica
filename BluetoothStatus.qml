@@ -1,5 +1,4 @@
 import QtQuick
-import Quickshell
 import Quickshell.Bluetooth
 
 BarItem {
@@ -18,8 +17,12 @@ BarItem {
                 ? `${dev.name}\t${Math.round(dev.battery * 100)}%` : dev.name);
         return lines.join("\n");
     }
-    onClicked: Quickshell.execDetached(
-        ["vicinae", "vicinae://launch/@Gelei/store.vicinae.bluetooth/devices"])
+    onClicked: devicesPopup.toggle()
+
+    BluetoothDevicePopup {
+        id: devicesPopup
+        anchorItem: root
+    }
 
     BarText {
         color: root.fg

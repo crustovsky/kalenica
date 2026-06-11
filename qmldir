@@ -1,6 +1,7 @@
 singleton Theme 1.0 Theme.qml
 ActiveWindow 1.0 ActiveWindow.qml
 AudioDevicePopup 1.0 AudioDevicePopup.qml
+BluetoothDevicePopup 1.0 BluetoothDevicePopup.qml
 Backlight 1.0 Backlight.qml
 Bar 1.0 Bar.qml
 BarItem 1.0 BarItem.qml
