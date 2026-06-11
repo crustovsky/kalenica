@@ -7,6 +7,8 @@ import Quickshell.Wayland
 
 // Alt-tab style window switcher (the hyprexpo itch, scoped down): centered
 // overlay with a card per window — live preview, title, workspace number.
+// At most 3x2 cards are visible; beyond that the grid scrolls (keyboard
+// selection drags the viewport along, mouse wheel scrolls by row).
 // Toggle with `qs ipc call expo toggle` (Meta+A). Tab/arrows cycle, Enter or
 // click focuses, Esc closes. Cards are sorted most-recently-used first and
 // the previous window starts selected, so open+Enter flips like alt-tab.
@@ -58,8 +60,6 @@ Scope {
         readonly property int cardW: 300
         readonly property int cardH: 196
         readonly property int gap: 12
-        readonly property int perRow: Math.max(1, Math.min(root.windows.length,
-            Math.floor((screen !== null ? screen.width * 0.85 : 1600) / (cardW + gap))))
 
         screen: {
             const focused = Hyprland.focusedMonitor;
@@ -88,8 +88,8 @@ Scope {
         Rectangle {
             id: frame
             anchors.fill: parent
-            implicitWidth: flow.width + 32
-            implicitHeight: flow.implicitHeight + 32
+            implicitWidth: grid.width + 32
+            implicitHeight: grid.height + 32
             radius: 12
             color: Theme.notifBg
             border.width: 2
@@ -118,30 +118,50 @@ Scope {
                 }
             }
 
-            Flow {
-                id: flow
+            BarText {
                 anchors.centerIn: parent
-                width: panel.perRow * (panel.cardW + panel.gap) - panel.gap
-                spacing: panel.gap
+                visible: root.windows.length === 0
+                text: "no windows"
+                color: Theme.fgDim
+            }
 
-                BarText {
-                    visible: root.windows.length === 0
-                    text: "no windows"
-                    color: Theme.fgDim
-                }
+            GridView {
+                id: grid
 
-                Repeater {
-                    model: root.windows
+                readonly property int cols: Math.max(1, Math.min(3, root.windows.length))
+                readonly property int rows: Math.max(1, Math.min(2, Math.ceil(root.windows.length / 3)))
+
+                anchors.centerIn: parent
+                width: cols * cellWidth
+                height: rows * cellHeight
+                cellWidth: panel.cardW + panel.gap
+                cellHeight: panel.cardH + panel.gap
+                clip: true
+                interactive: root.windows.length > 6
+                snapMode: GridView.SnapToRow
+                boundsBehavior: Flickable.StopAtBounds
+                model: root.windows
+                // dragging the selection past an edge scrolls the viewport
+                currentIndex: root.selected
+
+                delegate: Item {
+                    id: cell
+                    required property var modelData
+                    required property int index
+
+                    width: grid.cellWidth
+                    height: grid.cellHeight
 
                     Rectangle {
                         id: card
-                        required property var modelData
-                        required property int index
+                        readonly property var modelData: cell.modelData
+                        readonly property int index: cell.index
 
+                        anchors.centerIn: parent
                         width: panel.cardW
                         height: panel.cardH
                         radius: 10
-                        color: index === root.selected ? Theme.bgHover : "transparent"
+                        color: cell.index === root.selected ? Theme.bgHover : "transparent"
 
                         Column {
                             anchors.centerIn: parent
