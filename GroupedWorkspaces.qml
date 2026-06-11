@@ -1,4 +1,5 @@
 import QtQuick
+import QtQuick.Effects
 import Quickshell
 import Quickshell.Hyprland
 import Quickshell.Widgets
@@ -59,6 +60,15 @@ Row {
                             if (entry !== null && entry.icon !== "")
                                 return Quickshell.iconPath(entry.icon, "application-x-executable");
                             return Quickshell.iconPath(appId, "application-x-executable");
+                        }
+
+                        // monochrome, tinted like the pill's text
+                        layer.enabled: true
+                        layer.effect: MultiEffect {
+                            saturation: -1
+                            colorization: 1
+                            colorizationColor: hover.hovered || group.modelData.focused
+                                || group.modelData.urgent ? Theme.fgHover : Theme.fg
                         }
 
                         MouseArea {

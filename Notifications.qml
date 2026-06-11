@@ -71,10 +71,11 @@ Scope {
                         ? Theme.notifBorderCritical : Theme.notifBorder
 
                     Timer {
-                        // expireTimeout is in milliseconds, -1 = sender default
+                        // expireTimeout is in milliseconds, -1 = sender default;
+                        // critical notifications stay until dismissed
                         interval: card.modelData.expireTimeout > 0
                             ? card.modelData.expireTimeout : 5000
-                        running: true
+                        running: card.modelData.urgency !== NotificationUrgency.Critical
                         onTriggered: card.modelData.expire()
                     }
 

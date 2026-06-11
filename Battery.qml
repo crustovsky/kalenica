@@ -1,4 +1,5 @@
 import QtQuick
+import Quickshell
 import Quickshell.Services.UPower
 
 BarItem {
@@ -12,6 +13,15 @@ BarItem {
         || device.state === UPowerDeviceState.PendingCharge
         || device.state === UPowerDeviceState.FullyCharged
     readonly property var icons: ["󰂃", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"]
+    // pct > 0 skips the transient 0% while UPower populates at startup
+    readonly property bool low: pct > 0 && pct <= 20 && !charging
+    readonly property bool critical: pct > 0 && pct <= 10 && !charging
+
+    onCriticalChanged: {
+        if (critical)
+            Quickshell.execDetached(["notify-send", "-u", "critical", "-a", "battery",
+                "Battery critical", `${pct}% remaining`]);
+    }
 
     visible: device !== null && device.isPresent
 
@@ -33,9 +43,18 @@ BarItem {
     }
 
     BarText {
-        color: root.pct <= 10 && !root.charging ? Theme.critical
-             : root.pct <= 20 && !root.charging ? Theme.warning
+        color: root.critical ? Theme.critical
+             : root.low ? Theme.warning
              : root.fg
+
+        // waybar's blink_warning (5s) / blink_critical (2.5s)
+        SequentialAnimation on opacity {
+            running: root.low
+            loops: Animation.Infinite
+            alwaysRunToEnd: true
+            NumberAnimation { to: 0.5; duration: root.critical ? 1250 : 2500 }
+            NumberAnimation { to: 1; duration: root.critical ? 1250 : 2500 }
+        }
         text: root.charging ? ` ${root.pct}%`
             : `${root.icons[Math.min(10, Math.round(root.pct / 10))]} ${root.pct}%`
     }

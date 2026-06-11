@@ -1,4 +1,5 @@
 import QtQuick
+import QtQuick.Effects
 import Quickshell
 import Quickshell.Services.SystemTray
 import Quickshell.Widgets
@@ -22,6 +23,13 @@ BarItem {
                 implicitSize: 13
                 anchors.centerIn: parent
                 source: trayItem.modelData.icon
+                // monochrome, tinted like the text modules
+                layer.enabled: true
+                layer.effect: MultiEffect {
+                    saturation: -1
+                    colorization: 1
+                    colorizationColor: root.fg
+                }
             }
 
             QsMenuAnchor {
