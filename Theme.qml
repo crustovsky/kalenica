@@ -24,6 +24,8 @@ Singleton {
     // OSD progress bar track (and fill when muted).
     readonly property color osdTrack: Qt.alpha("#cdd6f4", 0.25)
 
+    readonly property color separator: Qt.alpha("#cdd6f4", 0.25)
+
     readonly property string fontFamily: "Iosevka Nerd Font"
     readonly property int fontSize: 14
 }
