@@ -49,8 +49,9 @@ Row {
             id: group
             required property var modelData
 
+            // root.screen null-checked: it dies first when a monitor goes away
             readonly property bool foreign: modelData.monitor === null
-                || modelData.monitor.name !== root.screen.name
+                || root.screen === null || modelData.monitor.name !== root.screen.name
 
             visible: modelData.id > 0
             width: content.implicitWidth + 16
