@@ -37,7 +37,7 @@ Drawer {
     }
     BarItem {
         id: lock
-        onClicked: Quickshell.execDetached(["vicinae", "vicinae://launch/power/lock"])
+        onClicked: Quickshell.execDetached(["uwsm", "app", "--", "hyprlock"])
         BarText { color: lock.fg; text: "⏸" }
     }
 }

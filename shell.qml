@@ -1,5 +1,6 @@
 //@ pragma UseQApplication
 // required for tray menus (QsMenuAnchor); pragma changes need a restart
+import QtQuick
 import Quickshell
 import Quickshell.Io
 
@@ -35,5 +36,32 @@ ShellRoot {
         function toggle(): void {
             root.barVisible = !root.barVisible;
         }
+    }
+
+    // Hyprland sometimes stops compositing a mapped layer surface after an
+    // output disable/enable cycle (lid close/open): remap the bars once the
+    // screen list settles to force full damage
+    Connections {
+        target: Quickshell
+
+        function onScreensChanged() {
+            if (root.barVisible)
+                healOff.restart();
+        }
+    }
+
+    Timer {
+        id: healOff
+        interval: 2000
+        onTriggered: {
+            root.barVisible = false;
+            healOn.start();
+        }
+    }
+
+    Timer {
+        id: healOn
+        interval: 500
+        onTriggered: root.barVisible = true
     }
 }
