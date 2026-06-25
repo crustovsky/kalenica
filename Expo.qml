@@ -4,6 +4,7 @@ import Quickshell
 import Quickshell.Hyprland
 import Quickshell.Io
 import Quickshell.Wayland
+import Quickshell.Widgets
 
 // Alt-tab style window switcher (the hyprexpo itch, scoped down): centered
 // overlay with a card per window — live preview, title, workspace number.
@@ -180,7 +181,20 @@ Scope {
                                 anchors.horizontalCenter: parent.horizontalCenter
                                 spacing: 8
 
+                                IconImage {
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    implicitSize: 18
+                                    visible: card.modelData.wayland !== null
+                                    source: {
+                                        void DesktopEntries.applications.values;
+                                        const appId = card.modelData.wayland !== null
+                                            ? card.modelData.wayland.appId : "";
+                                        return AppIcon.forAppId(appId);
+                                    }
+                                }
+
                                 BarText {
+                                    anchors.verticalCenter: parent.verticalCenter
                                     text: card.modelData.workspace !== null
                                         ? card.modelData.workspace.id : ""
                                     color: card.index === root.selected
@@ -188,6 +202,7 @@ Scope {
                                 }
 
                                 BarText {
+                                    anchors.verticalCenter: parent.verticalCenter
                                     property real maxWidth: 220
                                     width: Math.min(implicitWidth, maxWidth)
                                     elide: Text.ElideRight
