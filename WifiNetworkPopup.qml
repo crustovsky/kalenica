@@ -59,6 +59,12 @@ PopupWindow {
         anchors.fill: parent
         radius: 8
         color: Theme.bg
+        // springy scale-in on open (window unmaps instantly on close → opening only)
+        transformOrigin: Item.Top
+        scale: root.visible ? 1 : 0.85
+        Behavior on scale {
+            NumberAnimation { duration: 200; easing.type: Easing.OutBack; easing.overshoot: 1.3 }
+        }
 
         HoverHandler { id: popHover }
 
