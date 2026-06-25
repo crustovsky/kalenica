@@ -87,10 +87,7 @@ Row {
                         source: {
                             void DesktopEntries.applications.values;
                             const appId = icon.modelData.wayland !== null ? icon.modelData.wayland.appId : "";
-                            const entry = DesktopEntries.heuristicLookup(appId);
-                            if (entry !== null && entry.icon !== "")
-                                return Quickshell.iconPath(entry.icon, "application-x-executable");
-                            return Quickshell.iconPath(appId, "application-x-executable");
+                            return AppIcon.forAppId(appId);
                         }
 
                         // monochrome, tinted like the pill's text
