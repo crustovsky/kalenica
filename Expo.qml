@@ -165,6 +165,10 @@ Scope {
                         height: panel.cardH
                         radius: 10
                         color: cell.index === root.selected ? Theme.bgHover : "transparent"
+                        Behavior on color { ColorAnimation { duration: 120 } }
+
+                        transformOrigin: Item.Center
+                        PressPulse { id: cardPulse; item: card }
 
                         Column {
                             anchors.centerIn: parent
@@ -220,6 +224,7 @@ Scope {
                             hoverEnabled: true
                             cursorShape: Qt.PointingHandCursor
                             onEntered: root.selected = card.index
+                            onPressed: cardPulse.restart()
                             onClicked: root.activateSelected()
                         }
                     }

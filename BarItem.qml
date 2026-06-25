@@ -27,21 +27,10 @@ Rectangle {
         ColorAnimation { duration: 120 }
     }
 
-    // press feedback: a triggered squish-and-spring pulse (not bound to the
-    // held state, so a fast tap still plays in full). scale is render-only — no
-    // reflow. fired from the MouseArea, so display-only modules don't pulse.
+    // press feedback fired from the MouseArea (so display-only modules don't
+    // pulse, and a fast tap still plays in full)
     transformOrigin: Item.Center
-    SequentialAnimation {
-        id: pressPulse
-        NumberAnimation {
-            target: root; property: "scale"
-            to: 0.88; duration: 70; easing.type: Easing.OutQuad
-        }
-        NumberAnimation {
-            target: root; property: "scale"
-            to: 1.0; duration: 160; easing.type: Easing.OutBack; easing.overshoot: 1.6
-        }
-    }
+    PressPulse { id: pressPulse; item: root }
 
     Row {
         id: inner

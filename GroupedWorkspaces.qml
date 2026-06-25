@@ -61,6 +61,10 @@ Row {
                  : modelData.urgent ? Theme.urgentBg
                  : modelData.focused ? Theme.bgHover
                  : "transparent"
+            Behavior on color { ColorAnimation { duration: 120 } }
+
+            transformOrigin: Item.Center
+            PressPulse { id: pillPulse; item: group }
 
             Row {
                 id: content
@@ -137,6 +141,7 @@ Row {
                             onClicked: mouse => {
                                 if (dragged || icon.modelData.wayland === null)
                                     return;
+                                pillPulse.restart();
                                 if (mouse.button === Qt.LeftButton)
                                     icon.modelData.wayland.activate();
                                 else
@@ -164,6 +169,7 @@ Row {
                 z: -1
                 cursorShape: Qt.PointingHandCursor
                 acceptedButtons: Qt.LeftButton | Qt.RightButton
+                onPressed: pillPulse.restart()
                 onClicked: mouse => {
                     if (mouse.button === Qt.RightButton) {
                         if (group.foreign)

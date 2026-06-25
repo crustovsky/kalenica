@@ -1,5 +1,6 @@
 singleton Theme 1.0 Theme.qml
 singleton AppIcon 1.0 AppIcon.qml
+PressPulse 1.0 PressPulse.qml
 ActiveWindow 1.0 ActiveWindow.qml
 AudioDevicePopup 1.0 AudioDevicePopup.qml
 BluetoothDevicePopup 1.0 BluetoothDevicePopup.qml
