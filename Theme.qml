@@ -4,7 +4,7 @@ import Quickshell
 
 // Colors and font lifted from waybar's style.css (Catppuccin-ish at 0.7 alpha).
 Singleton {
-    readonly property color bg: Qt.rgba(21 / 255, 18 / 255, 27 / 255, 0.3)
+    readonly property color bg: Qt.rgba(21 / 255, 18 / 255, 27 / 255, 0.7)
     readonly property color fg: Qt.alpha("#cdd6f4", 0.75)
     readonly property color fgHover: Qt.alpha("#11111b", 0.7)
     readonly property color bgHover: Qt.alpha("#cdd6f4", 0.7)
