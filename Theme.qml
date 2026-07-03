@@ -15,7 +15,7 @@ Singleton {
     readonly property color critical: Qt.alpha("#f38ba8", 0.7)
 
     // Notification popups, from dunstrc: bg #1e1e2e nominal 0.7 alpha (b3),
-    // lowered for blur compositing same as `bg` above; frame/fg colors as-is.
+    // kept at the pre-xray blur-compensated 0.5; frame/fg colors as-is.
     readonly property color notifBg: Qt.rgba(30 / 255, 30 / 255, 46 / 255, 0.5)
     readonly property color notifFg: "#cdd6f4"
     readonly property color notifBorder: "#a6adc8"
