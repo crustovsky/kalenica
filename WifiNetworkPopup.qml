@@ -1,17 +1,13 @@
 pragma ComponentBehavior: Bound
 import QtQuick
-import Quickshell
 import Quickshell.Networking
 
 // Anchored wifi network list for the network bar item: known/open networks
 // connect on click, the connected one disconnects, secured unknown ones
-// (lock marker) open the password prompt. Actively scans while open. Closes
-// when the mouse stays away (no HyprlandFocusGrab: it eats clicks into
-// popup child surfaces, see CLAUDE.md).
-PopupWindow {
+// (lock marker) open the password prompt. Actively scans while open.
+AnchoredPopup {
     id: root
 
-    required property Item anchorItem
     required property var passwordPrompt
 
     readonly property var wifiDevice: Networking.devices.values.find(
@@ -25,10 +21,6 @@ PopupWindow {
 
     property var failedNet: null
 
-    function toggle() {
-        visible = !visible;
-    }
-
     onVisibleChanged: {
         if (wifiDevice !== null)
             wifiDevice.scannerEnabled = visible;
@@ -40,122 +32,56 @@ PopupWindow {
         onTriggered: root.failedNet = null
     }
 
-    anchor.item: anchorItem
-    anchor.rect.w: anchorItem.width
-    anchor.rect.h: anchorItem.height + 6
-    anchor.edges: Edges.Bottom
-    anchor.gravity: Edges.Bottom
-    color: "transparent"
-    implicitWidth: 320
-    implicitHeight: column.implicitHeight + 16
-
-    Timer {
-        interval: 1500
-        running: root.visible && !popHover.hovered
-        onTriggered: root.visible = false
+    BarText {
+        visible: root.networks.length === 0
+        x: 8
+        text: "no networks"
     }
 
-    Rectangle {
-        anchors.fill: parent
-        radius: 8
-        color: Theme.bg
-        // springy scale-in on open (window unmaps instantly on close → opening only)
-        transformOrigin: Item.Top
-        scale: root.visible ? 1 : 0.85
-        Behavior on scale {
-            NumberAnimation { duration: 200; easing.type: Easing.OutBack; easing.overshoot: 1.3 }
-        }
+    Repeater {
+        model: root.networks
 
-        HoverHandler { id: popHover }
+        PopupRow {
+            id: row
+            required property var modelData
 
-        Column {
-            id: column
-            x: 8
-            y: 8
-            width: parent.width - 16
-            spacing: 2
+            readonly property bool open:
+                modelData.security === WifiSecurityType.Open
+                || modelData.security === WifiSecurityType.Owe
+            readonly property bool needsKey: !modelData.known && !open
 
-            BarText {
-                visible: root.networks.length === 0
-                x: 8
-                text: "no networks"
+            Connections {
+                target: row.modelData
+                function onConnectionFailed() {
+                    root.failedNet = row.modelData;
+                    failedTimer.restart();
+                }
             }
 
-            Repeater {
-                model: root.networks
-
-                Rectangle {
-                    id: row
-                    required property var modelData
-
-                    readonly property bool open:
-                        modelData.security === WifiSecurityType.Open
-                        || modelData.security === WifiSecurityType.Owe
-                    readonly property bool needsKey: !modelData.known && !open
-                    readonly property string detail: {
-                        if (modelData.stateChanging)
-                            return modelData.state === ConnectionState.Disconnecting
-                                ? "disconnecting…" : "connecting…";
-                        if (modelData === root.failedNet)
-                            return "failed";
-                        const s = modelData.signalStrength;
-                        return `${Math.round(s <= 1 ? s * 100 : s)}%`;
-                    }
-
-                    Connections {
-                        target: row.modelData
-                        function onConnectionFailed() {
-                            root.failedNet = row.modelData;
-                            failedTimer.restart();
-                        }
-                    }
-
-                    width: column.width
-                    height: label.implicitHeight + 10
-                    radius: 6
-                    color: rowHover.hovered ? Theme.bgHover : "transparent"
-
-                    BarText {
-                        id: label
-                        anchors.verticalCenter: parent.verticalCenter
-                        x: 8
-                        width: parent.width - 16 - (detailText.visible ? detailText.implicitWidth + 8 : 0)
-                        elide: Text.ElideRight
-                        text: `${row.modelData.connected ? "●" : "○"} ${row.modelData.name}`
-                            + (row.needsKey ? " 󰌾" : "")
-                        color: rowHover.hovered ? Theme.fgHover : Theme.fg
-                        font.bold: row.modelData.connected
-                    }
-
-                    BarText {
-                        id: detailText
-                        anchors.verticalCenter: parent.verticalCenter
-                        anchors.right: parent.right
-                        anchors.rightMargin: 8
-                        visible: row.detail !== ""
-                        text: row.detail
-                        color: row.detail === "failed" ? Theme.critical : Theme.fg
-                    }
-
-                    HoverHandler { id: rowHover }
-
-                    MouseArea {
-                        anchors.fill: parent
-                        cursorShape: Qt.PointingHandCursor
-                        onClicked: {
-                            if (row.modelData.stateChanging)
-                                return;
-                            if (row.modelData.connected) {
-                                row.modelData.disconnect();
-                            } else if (row.needsKey) {
-                                root.passwordPrompt.ask(row.modelData);
-                                root.visible = false;
-                            } else {
-                                root.failedNet = null;
-                                row.modelData.connect();
-                            }
-                        }
-                    }
+            text: `${modelData.connected ? "●" : "○"} ${modelData.name}`
+                + (needsKey ? " 󰌾" : "")
+            bold: modelData.connected
+            detail: {
+                if (modelData.stateChanging)
+                    return modelData.state === ConnectionState.Disconnecting
+                        ? "disconnecting…" : "connecting…";
+                if (modelData === root.failedNet)
+                    return "failed";
+                const s = modelData.signalStrength;
+                return `${Math.round(s <= 1 ? s * 100 : s)}%`;
+            }
+            detailColor: detail === "failed" ? Theme.critical : Theme.fg
+            onClicked: {
+                if (modelData.stateChanging)
+                    return;
+                if (modelData.connected) {
+                    modelData.disconnect();
+                } else if (needsKey) {
+                    root.passwordPrompt.ask(modelData);
+                    root.visible = false;
+                } else {
+                    root.failedNet = null;
+                    modelData.connect();
                 }
             }
         }
