@@ -1,5 +1,6 @@
 //@ pragma UseQApplication
 // required for tray menus (QsMenuAnchor); pragma changes need a restart
+pragma ComponentBehavior: Bound
 import QtQuick
 import Quickshell
 import Quickshell.Io

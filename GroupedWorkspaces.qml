@@ -1,3 +1,4 @@
+pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Effects
 import Quickshell
@@ -172,7 +173,8 @@ Row {
                 onPressed: pillPulse.restart()
                 onClicked: mouse => {
                     if (mouse.button === Qt.RightButton) {
-                        if (group.foreign)
+                        // foreign is also true while root.screen is null (monitor teardown)
+                        if (group.foreign && root.screen !== null)
                             Hyprland.dispatch(`hl.dsp.workspace.move({ workspace = ${group.modelData.id}, monitor = "${root.screen.name}" })`);
                     } else {
                         group.modelData.activate();
