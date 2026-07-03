@@ -87,7 +87,9 @@ Row {
                         id: icon
                         required property var modelData
 
-                        anchors.verticalCenter: parent.verticalCenter
+                        // parent nulls during delegate teardown (every window
+                        // close) — unguarded this logs a TypeError each time
+                        anchors.verticalCenter: parent ? parent.verticalCenter : undefined
                         implicitSize: 16
                         source: {
                             void DesktopEntries.applications.values;
