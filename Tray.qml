@@ -46,6 +46,7 @@ BarItem {
                 anchors.fill: parent
                 cursorShape: Qt.PointingHandCursor
                 acceptedButtons: Qt.LeftButton | Qt.RightButton
+                onPressed: root.pulse()
                 onClicked: mouse => {
                     if (mouse.button === Qt.LeftButton && !trayItem.modelData.onlyMenu)
                         trayItem.modelData.activate();

@@ -32,6 +32,12 @@ Rectangle {
     transformOrigin: Item.Center
     PressPulse { id: pressPulse; item: root }
 
+    // content with its own MouseArea (tray icons) eats the press before the
+    // z: -1 area sees it — call this from there to still pulse the module
+    function pulse() {
+        pressPulse.restart();
+    }
+
     Row {
         id: inner
         anchors.centerIn: parent

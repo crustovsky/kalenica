@@ -126,6 +126,9 @@ Item {
                         height: inputBox.height
                         radius: 8
                         color: eyeHover.hovered ? Theme.bgHover : "transparent"
+                        Behavior on color {
+                            ColorAnimation { duration: 120 }
+                        }
                         border.width: 1
                         border.color: Theme.notifBorder
 
@@ -161,6 +164,9 @@ Item {
                             height: buttonText.implicitHeight + 10
                             radius: 8
                             color: buttonHover.hovered ? Theme.bgHover : "transparent"
+                            Behavior on color {
+                                ColorAnimation { duration: 120 }
+                            }
                             border.width: 1
                             border.color: Theme.notifBorder
 

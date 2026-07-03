@@ -166,6 +166,9 @@ Scope {
                                         height: actionText.implicitHeight + 8
                                         radius: 8
                                         color: actionHover.hovered ? Theme.bgHover : "transparent"
+                                        Behavior on color {
+                                            ColorAnimation { duration: 120 }
+                                        }
                                         border.width: 1
                                         border.color: Theme.notifBorder
 
