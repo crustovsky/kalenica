@@ -31,3 +31,4 @@ PowerMode 1.0 PowerMode.qml
 Tray 1.0 Tray.qml
 WifiNetworkPopup 1.0 WifiNetworkPopup.qml
 WifiPasswordPrompt 1.0 WifiPasswordPrompt.qml
+Screenshot 1.0 Screenshot.qml

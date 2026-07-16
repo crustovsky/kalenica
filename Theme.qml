@@ -21,6 +21,9 @@ Singleton {
     readonly property color notifBorder: "#a6adc8"
     readonly property color notifBorderCritical: "#fab387"
 
+    // screenshot area-selection dim (outside the rubber band)
+    readonly property color screenshotDim: Qt.alpha("#11111b", 0.4)
+
     // faint fg: separators, OSD track (and fill when muted)
     readonly property color fgFaint: Qt.alpha("#cdd6f4", 0.25)
     // de-emphasized text (calendar week numbers / weekday header)

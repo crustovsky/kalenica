@@ -30,6 +30,9 @@ ShellRoot {
     // toggle with: qs ipc call expo toggle
     Expo {}
 
+    // qs ipc call screenshot screen|active|area
+    Screenshot {}
+
     // toggle with: qs ipc call bar toggle
     IpcHandler {
         target: "bar"
