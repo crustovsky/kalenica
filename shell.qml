@@ -33,9 +33,6 @@ ShellRoot {
     // qs ipc call screenshot screen|active|area
     Screenshot {}
 
-    // heals stale NM/BlueZ bindings after a daemon restart
-    ServiceWatchdog {}
-
     // toggle with: qs ipc call bar toggle
     IpcHandler {
         target: "bar"
