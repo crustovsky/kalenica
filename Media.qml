@@ -15,21 +15,14 @@ BarItem {
     onMiddleClicked: { if (player !== null && player.canGoPrevious) player.previous(); }
     onRightClicked: { if (player !== null && player.canGoNext) player.next(); }
 
-    // capped like ActiveWindow so long tracks elide instead of overlapping
-    Item {
-        property real maxWidth: 270
-        implicitWidth: Math.min(songText.implicitWidth, maxWidth)
-        implicitHeight: songText.implicitHeight
+    BarText {
         anchors.verticalCenter: parent.verticalCenter
-
-        BarText {
-            id: songText
-            anchors.fill: parent
-            elide: Text.ElideRight
-            color: root.fg
-            font.italic: root.player !== null && !root.player.isPlaying
-            text: (root.player !== null && root.player.isPlaying ? "▶ " : "⏸ ")
-                + root.line
-        }
+        // capped like ActiveWindow so long tracks elide instead of overlapping
+        width: Math.min(implicitWidth, 270)
+        elide: Text.ElideRight
+        color: root.fg
+        font.italic: root.player !== null && !root.player.isPlaying
+        text: (root.player !== null && root.player.isPlaying ? "▶ " : "⏸ ")
+            + root.line
     }
 }
