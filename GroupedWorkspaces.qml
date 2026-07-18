@@ -62,7 +62,7 @@ Row {
                  : modelData.urgent ? Theme.urgentBg
                  : modelData.focused ? Theme.bgHover
                  : "transparent"
-            Behavior on color { ColorAnimation { duration: 120 } }
+            Behavior on color { ColorAnimation { duration: Config.timing.hoverFade } }
 
             transformOrigin: Item.Center
             PressPulse { id: pillPulse; item: group }

@@ -140,7 +140,7 @@ Scope {
 
     Timer {
         id: hideTimer
-        interval: 1500
+        interval: Config.modules.osd.hideDelay
         onTriggered: panel.visible = false
     }
 

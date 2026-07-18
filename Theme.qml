@@ -2,34 +2,41 @@ pragma Singleton
 import QtQuick
 import Quickshell
 
-// Colors and font lifted from waybar's style.css (Catppuccin-ish at 0.7 alpha).
+// Palette bases and font come from config.json (Config.theme); the alphas
+// composed here are relationships, not preferences — the fg emphasis ladder
+// (0.75/0.4/0.25) and the blur-calibrated bar/notification translucency
+// (Config.theme.barAlpha/notificationAlpha). Colors originally lifted from
+// waybar's style.css (Catppuccin-ish).
 Singleton {
-    readonly property color bg: Qt.rgba(21 / 255, 18 / 255, 27 / 255, 0.7)
-    readonly property color fg: Qt.alpha("#cdd6f4", 0.75)
-    readonly property color fgHover: Qt.alpha("#11111b", 0.7)
-    readonly property color bgHover: Qt.alpha("#cdd6f4", 0.7)
+    readonly property var palette: Config.theme.colors
+    readonly property real barAlpha: Config.theme.barAlpha
 
-    readonly property color urgentBg: Qt.alpha("#a6e3a1", 0.7)
+    readonly property color bg: Qt.alpha(palette.background, barAlpha)
+    readonly property color fg: Qt.alpha(palette.foreground, 0.75)
+    readonly property color fgHover: Qt.alpha(palette.hoverForeground, barAlpha)
+    readonly property color bgHover: Qt.alpha(palette.foreground, barAlpha)
 
-    readonly property color warning: Qt.alpha("#f9e2af", 0.7)
-    readonly property color critical: Qt.alpha("#f38ba8", 0.7)
+    readonly property color urgentBg: Qt.alpha(palette.urgent, barAlpha)
 
-    // Notification popups, from dunstrc: bg #1e1e2e nominal 0.7 alpha (b3),
-    // kept at the pre-xray blur-compensated 0.5; frame/fg colors as-is.
-    readonly property color notifBg: Qt.rgba(30 / 255, 30 / 255, 46 / 255, 0.5)
-    readonly property color notifFg: "#cdd6f4"
-    readonly property color notifBorder: "#a6adc8"
-    readonly property color notifBorderCritical: "#fab387"
+    readonly property color warning: Qt.alpha(palette.warning, barAlpha)
+    readonly property color critical: Qt.alpha(palette.critical, barAlpha)
+
+    // Notification popups, from dunstrc; bg kept at the pre-xray
+    // blur-compensated alpha, frame/fg colors opaque.
+    readonly property color notifBg: Qt.alpha(palette.notificationBackground, Config.theme.notificationAlpha)
+    readonly property color notifFg: palette.notificationForeground
+    readonly property color notifBorder: palette.notificationBorder
+    readonly property color notifBorderCritical: palette.notificationBorderCritical
 
     // screenshot area-selection dim (outside the rubber band); the readout
     // pill just reuses the bar chrome (bg/fg)
-    readonly property color screenshotDim: Qt.alpha("#11111b", 0.6)
+    readonly property color screenshotDim: Qt.alpha(palette.hoverForeground, 0.6)
 
     // faint fg: separators, OSD track (and fill when muted)
-    readonly property color fgFaint: Qt.alpha("#cdd6f4", 0.25)
+    readonly property color fgFaint: Qt.alpha(palette.foreground, 0.25)
     // de-emphasized text (calendar week numbers / weekday header)
-    readonly property color fgDim: Qt.alpha("#cdd6f4", 0.4)
+    readonly property color fgDim: Qt.alpha(palette.foreground, 0.4)
 
-    readonly property string fontFamily: "Iosevka Nerd Font"
-    readonly property int fontSize: 14
+    readonly property string fontFamily: Config.theme.font.family
+    readonly property int fontSize: Config.theme.font.size
 }

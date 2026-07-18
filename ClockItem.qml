@@ -20,6 +20,6 @@ BarItem {
 
     BarText {
         color: root.fg
-        text: Qt.formatDateTime(clock.date, "dd MMM HH:mm:ss")
+        text: Qt.formatDateTime(clock.date, Config.modules.clock.format)
     }
 }

@@ -58,7 +58,7 @@ PopupWindow {
 
     Timer {
         id: showDelay
-        interval: 150
+        interval: Config.timing.tooltipDelay
         onTriggered: {
             root.today = new Date();
             root.offset = 0;
@@ -89,7 +89,7 @@ PopupWindow {
         transformOrigin: Item.Top
         scale: root.visible ? 1 : 0.85
         Behavior on scale {
-            NumberAnimation { duration: 200; easing.type: Easing.OutBack; easing.overshoot: 1.3 }
+            NumberAnimation { duration: Config.timing.popupGrow; easing.type: Easing.OutBack; easing.overshoot: 1.3 }
         }
 
         HoverHandler { id: popHover }

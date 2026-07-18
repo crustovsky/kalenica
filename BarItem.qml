@@ -24,7 +24,7 @@ Rectangle {
     radius: 10
     color: hovered ? Theme.bgHover : "transparent"
     Behavior on color {
-        ColorAnimation { duration: 120 }
+        ColorAnimation { duration: Config.timing.hoverFade }
     }
 
     // press feedback fired from the MouseArea (so display-only modules don't
@@ -68,7 +68,7 @@ Rectangle {
     property bool showTip: false
     Timer {
         id: tipDelay
-        interval: 150
+        interval: Config.timing.tooltipDelay
         onTriggered: root.showTip = true
     }
     onHoveredChanged: {
@@ -100,7 +100,7 @@ Rectangle {
             transformOrigin: Item.Top
             scale: tip.visible ? 1 : 0.85
             Behavior on scale {
-                NumberAnimation { duration: 200; easing.type: Easing.OutBack; easing.overshoot: 1.3 }
+                NumberAnimation { duration: Config.timing.popupGrow; easing.type: Easing.OutBack; easing.overshoot: 1.3 }
             }
 
             BarText {

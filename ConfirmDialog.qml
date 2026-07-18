@@ -112,7 +112,7 @@ Item {
                             radius: 8
                             color: active ? Theme.bgHover : "transparent"
                             Behavior on color {
-                                ColorAnimation { duration: 120 }
+                                ColorAnimation { duration: Config.timing.hoverFade }
                             }
                             border.width: 1
                             border.color: Theme.notifBorder

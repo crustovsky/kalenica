@@ -14,8 +14,8 @@ BarItem {
         || device.state === UPowerDeviceState.FullyCharged
     readonly property var icons: ["󰂃", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"]
     // pct > 0 skips the transient 0% while UPower populates at startup
-    readonly property bool low: pct > 0 && pct <= 20 && !charging
-    readonly property bool critical: pct > 0 && pct <= 10 && !charging
+    readonly property bool low: pct > 0 && pct <= Config.modules.battery.low && !charging
+    readonly property bool critical: pct > 0 && pct <= Config.modules.battery.critical && !charging
 
     onCriticalChanged: {
         if (critical)

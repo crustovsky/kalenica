@@ -75,7 +75,8 @@ Scope {
                         // expireTimeout is in milliseconds, -1 = sender default;
                         // critical notifications stay until dismissed
                         interval: card.modelData.expireTimeout > 0
-                            ? card.modelData.expireTimeout : 5000
+                            ? card.modelData.expireTimeout
+                            : Config.modules.notifications.timeout
                         running: card.modelData.urgency !== NotificationUrgency.Critical
                         onTriggered: card.modelData.expire()
                     }
@@ -167,7 +168,7 @@ Scope {
                                         radius: 8
                                         color: actionHover.hovered ? Theme.bgHover : "transparent"
                                         Behavior on color {
-                                            ColorAnimation { duration: 120 }
+                                            ColorAnimation { duration: Config.timing.hoverFade }
                                         }
                                         border.width: 1
                                         border.color: Theme.notifBorder

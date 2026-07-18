@@ -16,7 +16,7 @@ Rectangle {
     radius: 6
     color: hover.hovered ? Theme.bgHover : "transparent"
     Behavior on color {
-        ColorAnimation { duration: 120 }
+        ColorAnimation { duration: Config.timing.hoverFade }
     }
 
     BarText {

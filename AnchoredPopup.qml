@@ -28,7 +28,7 @@ PopupWindow {
     implicitHeight: column.implicitHeight + 16
 
     Timer {
-        interval: 1500
+        interval: Config.timing.popupHoverClose
         running: root.visible && !popHover.hovered && !root.holdOpen
         onTriggered: root.visible = false
     }
@@ -41,7 +41,7 @@ PopupWindow {
         transformOrigin: Item.Top
         scale: root.visible ? 1 : 0.85
         Behavior on scale {
-            NumberAnimation { duration: 200; easing.type: Easing.OutBack; easing.overshoot: 1.3 }
+            NumberAnimation { duration: Config.timing.popupGrow; easing.type: Easing.OutBack; easing.overshoot: 1.3 }
         }
 
         HoverHandler { id: popHover }

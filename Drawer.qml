@@ -14,7 +14,7 @@ Item {
     clip: true
 
     Behavior on implicitWidth {
-        NumberAnimation { duration: 300; easing.type: Easing.InOutQuad }
+        NumberAnimation { duration: Config.timing.drawerSlide; easing.type: Easing.InOutQuad }
     }
 
     Row {

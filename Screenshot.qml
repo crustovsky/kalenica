@@ -30,7 +30,9 @@ Scope {
     property string pendingWhat
 
     function shotPath(): string {
-        return Quickshell.env("HOME") + "/Pictures/"
+        const dir = Config.modules.screenshot.directory
+            .replace(/^~/, Quickshell.env("HOME"));
+        return dir + "/"
             + Qt.formatDateTime(new Date(), "yyyy-MM-dd_hh-mm-ss") + ".png";
     }
 
@@ -425,13 +427,13 @@ Scope {
                             height: 20
                             radius: 4
                             color: btnArea.containsMouse ? Theme.bgHover : "transparent"
-                            Behavior on color { ColorAnimation { duration: 120 } }
+                            Behavior on color { ColorAnimation { duration: Config.timing.hoverFade } }
 
                             BarText {
                                 anchors.centerIn: parent
                                 text: "✓"
                                 color: btnArea.containsMouse ? Theme.fgHover : Theme.fg
-                                Behavior on color { ColorAnimation { duration: 120 } }
+                                Behavior on color { ColorAnimation { duration: Config.timing.hoverFade } }
                             }
 
                             MouseArea {

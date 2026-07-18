@@ -165,7 +165,7 @@ Scope {
                         height: panel.cardH
                         radius: 10
                         color: cell.index === root.selected ? Theme.bgHover : "transparent"
-                        Behavior on color { ColorAnimation { duration: 120 } }
+                        Behavior on color { ColorAnimation { duration: Config.timing.hoverFade } }
 
                         transformOrigin: Item.Center
                         PressPulse { id: cardPulse; item: card }
