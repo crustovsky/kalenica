@@ -150,8 +150,6 @@ Scope {
 
                     Rectangle {
                         id: card
-                        readonly property var modelData: cell.modelData
-                        readonly property int index: cell.index
 
                         anchors.centerIn: parent
                         width: panel.cardW
@@ -169,7 +167,7 @@ Scope {
 
                             ScreencopyView {
                                 anchors.horizontalCenter: parent.horizontalCenter
-                                captureSource: card.modelData.wayland
+                                captureSource: cell.modelData.wayland
                                 live: panel.visible
                                 constraintSize: Qt.size(280, 150)
                             }
@@ -181,20 +179,20 @@ Scope {
                                 IconImage {
                                     anchors.verticalCenter: parent.verticalCenter
                                     implicitSize: 18
-                                    visible: card.modelData.wayland !== null
+                                    visible: cell.modelData.wayland !== null
                                     source: {
                                         void DesktopEntries.applications.values;
-                                        const appId = card.modelData.wayland !== null
-                                            ? card.modelData.wayland.appId : "";
+                                        const appId = cell.modelData.wayland !== null
+                                            ? cell.modelData.wayland.appId : "";
                                         return AppIcon.forAppId(appId);
                                     }
                                 }
 
                                 BarText {
                                     anchors.verticalCenter: parent.verticalCenter
-                                    text: card.modelData.workspace !== null
-                                        ? card.modelData.workspace.id : ""
-                                    color: card.index === root.selected
+                                    text: cell.modelData.workspace !== null
+                                        ? cell.modelData.workspace.id : ""
+                                    color: cell.index === root.selected
                                         ? Theme.fgHover : Theme.fgDim
                                 }
 
@@ -204,9 +202,9 @@ Scope {
                                     width: Math.min(implicitWidth, maxWidth)
                                     elide: Text.ElideRight
                                     font.bold: false
-                                    text: card.modelData.wayland !== null
-                                        ? card.modelData.wayland.title : ""
-                                    color: card.index === root.selected
+                                    text: cell.modelData.wayland !== null
+                                        ? cell.modelData.wayland.title : ""
+                                    color: cell.index === root.selected
                                         ? Theme.fgHover : Theme.fg
                                 }
                             }
@@ -216,7 +214,7 @@ Scope {
                             anchors.fill: parent
                             hoverEnabled: true
                             cursorShape: Qt.PointingHandCursor
-                            onEntered: root.selected = card.index
+                            onEntered: root.selected = cell.index
                             onPressed: cardPulse.restart()
                             onClicked: root.activateSelected()
                         }
