@@ -120,31 +120,11 @@ Item {
                         }
                     }
 
-                    Rectangle {
-                        id: eye
+                    DialogButton {
                         width: inputBox.height
                         height: inputBox.height
-                        radius: 8
-                        color: eyeHover.hovered ? Theme.bgHover : "transparent"
-                        Behavior on color {
-                            ColorAnimation { duration: Config.timing.hoverFade }
-                        }
-                        border.width: 1
-                        border.color: Theme.notifBorder
-
-                        BarText {
-                            anchors.centerIn: parent
-                            text: root.showPsk ? "󰈉" : "󰈈"
-                            color: eyeHover.hovered ? Theme.fgHover : Theme.notifFg
-                        }
-
-                        HoverHandler { id: eyeHover }
-
-                        MouseArea {
-                            anchors.fill: parent
-                            cursorShape: Qt.PointingHandCursor
-                            onClicked: root.showPsk = !root.showPsk
-                        }
+                        text: root.showPsk ? "󰈉" : "󰈈"
+                        onClicked: root.showPsk = !root.showPsk
                     }
                 }
 
@@ -155,40 +135,16 @@ Item {
                     Repeater {
                         model: ["Connect", "Cancel"]
 
-                        Rectangle {
-                            id: button
+                        DialogButton {
                             required property string modelData
                             required property int index
 
-                            width: buttonText.implicitWidth + 28
-                            height: buttonText.implicitHeight + 10
-                            radius: 8
-                            color: buttonHover.hovered ? Theme.bgHover : "transparent"
-                            Behavior on color {
-                                ColorAnimation { duration: Config.timing.hoverFade }
-                            }
-                            border.width: 1
-                            border.color: Theme.notifBorder
-
-                            BarText {
-                                id: buttonText
-                                anchors.centerIn: parent
-                                text: button.modelData
-                                color: buttonHover.hovered ? Theme.fgHover : Theme.notifFg
-                                font.bold: false
-                            }
-
-                            HoverHandler { id: buttonHover }
-
-                            MouseArea {
-                                anchors.fill: parent
-                                cursorShape: Qt.PointingHandCursor
-                                onClicked: {
-                                    if (button.index === 0)
-                                        panel.submit();
-                                    else
-                                        panel.visible = false;
-                                }
+                            text: modelData
+                            onClicked: {
+                                if (index === 0)
+                                    panel.submit();
+                                else
+                                    panel.visible = false;
                             }
                         }
                     }

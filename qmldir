@@ -5,6 +5,7 @@ singleton AppIcon 1.0 AppIcon.qml
 PressPulse 1.0 PressPulse.qml
 AnchoredPopup 1.0 AnchoredPopup.qml
 PopupRow 1.0 PopupRow.qml
+DialogButton 1.0 DialogButton.qml
 ActiveWindow 1.0 ActiveWindow.qml
 AudioDevicePopup 1.0 AudioDevicePopup.qml
 BluetoothDevicePopup 1.0 BluetoothDevicePopup.qml

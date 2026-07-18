@@ -100,45 +100,19 @@ Item {
                     Repeater {
                         model: ["Yes", "No"]
 
-                        Rectangle {
-                            id: button
+                        DialogButton {
                             required property string modelData
                             required property int index
 
-                            readonly property bool active: root.selected === index
-
-                            width: buttonText.implicitWidth + 28
-                            height: buttonText.implicitHeight + 10
-                            radius: 8
-                            color: active ? Theme.bgHover : "transparent"
-                            Behavior on color {
-                                ColorAnimation { duration: Config.timing.hoverFade }
+                            text: modelData
+                            highlighted: root.selected === index
+                            onHoveredChanged: {
+                                if (hovered)
+                                    root.selected = index;
                             }
-                            border.width: 1
-                            border.color: Theme.notifBorder
-
-                            BarText {
-                                id: buttonText
-                                anchors.centerIn: parent
-                                text: button.modelData
-                                color: button.active ? Theme.fgHover : Theme.notifFg
-                                font.bold: false
-                            }
-
-                            HoverHandler {
-                                onHoveredChanged: {
-                                    if (hovered)
-                                        root.selected = button.index;
-                                }
-                            }
-
-                            MouseArea {
-                                anchors.fill: parent
-                                cursorShape: Qt.PointingHandCursor
-                                onClicked: {
-                                    root.selected = button.index;
-                                    panel.activate();
-                                }
+                            onClicked: {
+                                root.selected = index;
+                                panel.activate();
                             }
                         }
                     }

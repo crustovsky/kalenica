@@ -151,39 +151,18 @@ Scope {
                                 Repeater {
                                     model: card.buttonActions
 
-                                    Rectangle {
+                                    DialogButton {
                                         id: actionButton
                                         required property var modelData
 
-                                        width: actionText.implicitWidth + 16
-                                        height: actionText.implicitHeight + 8
-                                        radius: 8
-                                        color: actionHover.hovered ? Theme.bgHover : "transparent"
-                                        Behavior on color {
-                                            ColorAnimation { duration: Config.timing.hoverFade }
-                                        }
-                                        border.width: 1
-                                        border.color: Theme.notifBorder
-
-                                        BarText {
-                                            id: actionText
-                                            anchors.centerIn: parent
-                                            text: actionButton.modelData.text !== ""
-                                                ? actionButton.modelData.text
-                                                : actionButton.modelData.identifier
-                                            color: actionHover.hovered ? Theme.fgHover : Theme.notifFg
-                                            font.bold: false
-                                        }
-
-                                        HoverHandler { id: actionHover }
-
-                                        MouseArea {
-                                            anchors.fill: parent
-                                            cursorShape: Qt.PointingHandCursor
-                                            onClicked: {
-                                                actionButton.modelData.invoke();
-                                                card.modelData.dismiss();
-                                            }
+                                        padX: 16
+                                        padY: 8
+                                        text: actionButton.modelData.text !== ""
+                                            ? actionButton.modelData.text
+                                            : actionButton.modelData.identifier
+                                        onClicked: {
+                                            actionButton.modelData.invoke();
+                                            card.modelData.dismiss();
                                         }
                                     }
                                 }
