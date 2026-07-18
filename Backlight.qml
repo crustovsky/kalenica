@@ -1,5 +1,4 @@
 import QtQuick
-import Quickshell
 import Quickshell.Io
 
 BarItem {
@@ -13,9 +12,9 @@ BarItem {
 
     Process {
         id: readBrightness
-        command: ["sh", "-c", "brightnessctl -m | cut -d, -f4 | tr -d %"]
         stdout: StdioCollector {
-            onStreamFinished: root.percent = parseInt(text) || 0
+            // machine-readable: device,class,current,percent%,max
+            onStreamFinished: root.percent = parseInt(text.split(",")[3]) || 0
         }
         onExited: code => { if (code !== 0) root.available = false; }
     }
@@ -25,13 +24,12 @@ BarItem {
         running: root.available
         repeat: true
         triggeredOnStart: true
-        onTriggered: readBrightness.running = true
+        onTriggered: readBrightness.exec(["brightnessctl", "-m"])
     }
 
-    onScrolled: delta => {
-        Quickshell.execDetached(["brightnessctl", "set", delta > 0 ? "1%+" : "1%-"]);
-        readBrightness.running = true;
-    }
+    // set with -m prints the result, so one process adjusts and reads back
+    onScrolled: delta => readBrightness.exec(
+        ["brightnessctl", "-m", "set", delta > 0 ? "1%+" : "1%-"])
 
     BarText {
         color: root.fg
