@@ -2,7 +2,6 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import Quickshell
 import Quickshell.Wayland
-import Quickshell.Hyprland
 import Quickshell.Services.Notifications
 import Quickshell.Widgets
 
@@ -20,14 +19,7 @@ Scope {
     }
 
     PanelWindow {
-        screen: {
-            const focused = Hyprland.focusedMonitor;
-            for (const s of Quickshell.screens) {
-                if (focused !== null && s.name === focused.name)
-                    return s;
-            }
-            return Quickshell.screens[0] ?? null;
-        }
+        screen: Screens.focused()
 
         visible: server.trackedNotifications.values.length > 0
         anchors {

@@ -2,7 +2,6 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
-import Quickshell.Hyprland
 import Quickshell.Services.Pipewire
 
 // Volume OSD replacing swayosd: a centered card near the bottom of the
@@ -147,17 +146,7 @@ Scope {
     PanelWindow {
         id: panel
 
-        screen: {
-            const focused = Hyprland.focusedMonitor;
-            for (const s of Quickshell.screens) {
-                if (s.name === root.screenOverride)
-                    return s;
-                if (root.screenOverride === ""
-                    && focused !== null && s.name === focused.name)
-                    return s;
-            }
-            return Quickshell.screens[0] ?? null;
-        }
+        screen: Screens.byName(root.screenOverride) ?? Screens.focused()
 
         visible: false
         anchors.bottom: true

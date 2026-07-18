@@ -1,7 +1,6 @@
 pragma ComponentBehavior: Bound
 import QtQuick
 import Quickshell
-import Quickshell.Hyprland
 import Quickshell.Io
 import Quickshell.Wayland
 
@@ -53,13 +52,10 @@ Scope {
         function screen(): void {
             if (root.fullSource !== null || root.selecting)
                 return;
-            const focused = Hyprland.focusedMonitor;
-            for (const s of Quickshell.screens) {
-                if (focused !== null && s.name === focused.name) {
-                    root.pendingWhat = s.name;
-                    root.fullSource = s;
-                    return;
-                }
+            const s = Screens.focused();
+            if (s !== null) {
+                root.pendingWhat = s.name;
+                root.fullSource = s;
             }
         }
 

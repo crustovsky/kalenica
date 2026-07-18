@@ -64,14 +64,7 @@ Scope {
         readonly property int cardH: 196
         readonly property int gap: 12
 
-        screen: {
-            const focused = Hyprland.focusedMonitor;
-            for (const s of Quickshell.screens) {
-                if (focused !== null && s.name === focused.name)
-                    return s;
-            }
-            return Quickshell.screens[0] ?? null;
-        }
+        screen: Screens.focused()
 
         visible: root.shown
         // no anchors: the compositor centers an unanchored layer surface
