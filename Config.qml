@@ -73,12 +73,22 @@ Singleton {
         property string directory: "~/Pictures"
     }
 
+    component LauncherConfig: JsonObject {
+        property list<string> command: ["vicinae", "toggle"]
+    }
+
+    component PowerConfig: JsonObject {
+        property list<string> lockCommand: ["uwsm", "app", "--", "hyprlock"]
+    }
+
     component ModulesConfig: JsonObject {
         property ClockConfig clock: ClockConfig {}
         property BatteryConfig battery: BatteryConfig {}
         property NotificationsConfig notifications: NotificationsConfig {}
         property OsdConfig osd: OsdConfig {}
         property ScreenshotConfig screenshot: ScreenshotConfig {}
+        property LauncherConfig launcher: LauncherConfig {}
+        property PowerConfig power: PowerConfig {}
     }
 
     FileView {

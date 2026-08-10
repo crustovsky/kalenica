@@ -37,7 +37,7 @@ Drawer {
     }
     BarItem {
         id: lock
-        onClicked: Quickshell.execDetached(["uwsm", "app", "--", "hyprlock"])
+        onClicked: Quickshell.execDetached(Config.modules.power.lockCommand)
         BarText { color: lock.fg; text: "⏸" }
     }
 }

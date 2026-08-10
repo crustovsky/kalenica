@@ -26,7 +26,7 @@ PanelWindow {
 
         BarItem {
             id: launcher
-            onClicked: Quickshell.execDetached(["vicinae", "toggle"])
+            onClicked: Quickshell.execDetached(Config.modules.launcher.command)
             BarText { color: launcher.fg; text: " " }
         }
         GroupedWorkspaces { screen: bar.screen }
