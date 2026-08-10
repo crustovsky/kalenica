@@ -1,0 +1,7 @@
+# live user config — materialized with defaults on first run
+config.json
+# private working notes (chezmoi-tracked, not part of the public repo)
+CLAUDE.md
+.claude/
+# throwaway test drivers
+_test_*.qml
