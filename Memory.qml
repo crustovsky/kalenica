@@ -11,7 +11,7 @@ BarItem {
     readonly property string icon: pct > 90 ? "" : pct > 60 ? "󰓅" : pct > 30 ? "󰾅" : "󰾆"
 
     tooltip: `󰾆 ${pct.toFixed(0)}%\n ${usedGb.toFixed(1)}GB/${totalGb.toFixed(1)}GB`
-    onClicked: Quickshell.execDetached(["kitty", "--class", "btop", "btop"])
+    onClicked: Quickshell.execDetached(Config.modules.memory.clickCommand)
 
     FileView {
         id: meminfo

@@ -81,6 +81,18 @@ Singleton {
         property list<string> lockCommand: ["uwsm", "app", "--", "hyprlock"]
     }
 
+    component CpuConfig: JsonObject {
+        property list<string> clickCommand: ["resources"]
+    }
+
+    component MemoryConfig: JsonObject {
+        property list<string> clickCommand: ["kitty", "--class", "btop", "btop"]
+    }
+
+    component AudioConfig: JsonObject {
+        property list<string> rightClickCommand: ["kitty", "--class", "Cava", "cava"]
+    }
+
     component ModulesConfig: JsonObject {
         property ClockConfig clock: ClockConfig {}
         property BatteryConfig battery: BatteryConfig {}
@@ -89,6 +101,9 @@ Singleton {
         property ScreenshotConfig screenshot: ScreenshotConfig {}
         property LauncherConfig launcher: LauncherConfig {}
         property PowerConfig power: PowerConfig {}
+        property CpuConfig cpu: CpuConfig {}
+        property MemoryConfig memory: MemoryConfig {}
+        property AudioConfig audio: AudioConfig {}
     }
 
     FileView {

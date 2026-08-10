@@ -26,7 +26,7 @@ BarItem {
     onClicked: devices.toggle()
     onRightClicked: {
         if (sinks)
-            Quickshell.execDetached(["kitty", "--class", "Cava", "cava"]);
+            Quickshell.execDetached(Config.modules.audio.rightClickCommand);
     }
     onScrolled: delta => {
         if (node !== null && node.audio !== null)

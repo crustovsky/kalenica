@@ -11,7 +11,7 @@ BarItem {
     property var last: ({})
 
     tooltip: `Load: ${load}` + (perCore !== "" ? `\n${perCore}` : "")
-    onClicked: Quickshell.execDetached(["resources"])
+    onClicked: Quickshell.execDetached(Config.modules.cpu.clickCommand)
 
     FileView {
         id: stat
