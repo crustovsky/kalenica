@@ -1,0 +1,13 @@
+[Unit]
+Description=Quickshell bar
+Documentation=https://quickshell.org/docs/
+PartOf=graphical-session.target
+After=graphical-session.target
+Requisite=graphical-session.target
+
+[Service]
+ExecStart=/usr/bin/qs
+Restart=on-failure
+
+[Install]
+WantedBy=graphical-session.target
