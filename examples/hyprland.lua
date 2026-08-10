@@ -24,7 +24,7 @@ hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd("qs ipc call brightness lower")
 -- Non-consuming: the EC cycles the level itself, the shell just shows it.
 hl.bind("XF86KbdLightOnOff", hl.dsp.exec_cmd("qs ipc call osd kbdlight"), { locked = true, non_consuming = true })
 
--- Volume via wpctl directly — the OSD watches PipeWire and shows itself.
+-- Volume via wpctl directly; the OSD watches PipeWire and shows itself.
 hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+"), { locked = true, repeating = true })
 hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"), { locked = true, repeating = true })
 hl.bind("XF86AudioMute", hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"), { locked = true })

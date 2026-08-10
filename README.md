@@ -1,6 +1,6 @@
 # kalenica
 
-*Polish: the ridge of a roof — the topmost horizontal line.*
+*Polish: the ridge of a roof, its topmost horizontal line.*
 
 An opinionated [Quickshell](https://quickshell.org) bar and shell essentials
 for [Hyprland](https://hypr.land). One process that replaced waybar, dunst,
@@ -10,8 +10,8 @@ swayosd, grimblast and a window switcher on my desktop.
 
 ## Philosophy
 
-A bar should do what a bar is supposed to do — show state, take the obvious
-click — and nothing else. No plugin system, no widget marketplace, no drift
+A bar should do what a bar is supposed to do (show state, take the obvious
+click) and nothing else. No plugin system, no widget marketplace, no drift
 toward a desktop environment. Every feature here exists because a separate
 daemon used to provide it and folding it into the shell made the desktop
 simpler: fewer packages, fewer processes, one theme, one config.
@@ -23,26 +23,26 @@ timings, thresholds, click commands) and applies live on save.
 
 ## What's in the box
 
-- **Bar** — workspaces with app icons (every monitor shows all workspaces;
+- **Bar**: workspaces with app icons (every monitor shows all workspaces;
   drag an icon onto any pill to silently move the window there, right-click
   a foreign pill to pull that workspace over), active window title, mpris
   media, monochrome tray, CPU / memory / network / bluetooth / battery /
   audio / backlight modules with hover tooltips, clock with calendar popup
   (ISO weeks, scroll to flip months), power menu with confirm dialogs.
-- **Popups** — audio output/input switcher, wifi network list (native
+- **Popups**: audio output/input switcher, wifi network list (native
   connect, password prompt for new secured networks, right-click the icon
   for radio off), bluetooth devices incl. scan/pair mode.
-- **Notifications** — a full `org.freedesktop.Notifications` daemon:
+- **Notifications**: a full `org.freedesktop.Notifications` daemon:
   cards with icons and action buttons, critical urgency never auto-expires.
 
   ![notification](assets/notification.png)
-- **OSD** — volume, microphone, screen and keyboard backlight.
+- **OSD**: volume, microphone, screen and keyboard backlight.
 
   ![osd](assets/osd.png)
-- **Screenshots** — full screen, active window, or drag-select area with a
+- **Screenshots**: full screen, active window, or drag-select area with a
   post-drag adjust mode (resize/move the region, arrow-key nudge, x/y/w/h
-  readout) — saved dated to disk, copied to the clipboard, notified.
-- **Expo** — alt-tab-style window switcher with live `ScreencopyView`
+  readout); saved dated to disk, copied to the clipboard, notified.
+- **Expo**: alt-tab-style window switcher with live `ScreencopyView`
   previews, MRU order, keyboard and mouse.
 
   ![expo](assets/expo.png)
@@ -63,7 +63,7 @@ whatever commands you configure).
 - CLI tools: `wpctl` (WirePlumber) for audio, `brightnessctl` for internal
   backlights, `ddcutil` for external-monitor brightness over DDC/CI,
   `wl-copy` for screenshot clipboard, `notify-send` (libnotify).
-- System services: NetworkManager, UPower, BlueZ — all consumed over D-Bus.
+- System services: NetworkManager, UPower, BlueZ (all consumed over D-Bus).
 
 ## Install
 
@@ -72,14 +72,14 @@ git clone https://github.com/crustovsky/kalenica ~/.config/quickshell
 ```
 
 Run it with `qs`, or as a systemd user service bound to the session
-(recommended under uwsm — see [`examples/quickshell.service`](examples/quickshell.service)):
+(recommended under uwsm, see [`examples/quickshell.service`](examples/quickshell.service)):
 
 ```sh
 systemctl --user enable --now quickshell.service
 ```
 
-Hyprland integration — the blur layer rule and the keybinds that drive the
-IPC entry points — is in [`examples/hyprland.lua`](examples/hyprland.lua).
+Hyprland integration (the blur layer rule and the keybinds that drive the
+IPC entry points) is in [`examples/hyprland.lua`](examples/hyprland.lua).
 
 On first run a `config.json` with the defaults below is created next to
 `shell.qml`. Edits apply live; no reload needed.
@@ -132,7 +132,7 @@ you've seen the idiom of all of them.
 ## Contributing
 
 Bug fixes are always welcome. Functionality is welcome when it fits the
-scope above — something a bar/shell legitimately owns, ideally replacing an
+scope above: something a bar/shell legitimately owns, ideally replacing an
 external daemon rather than adding one. Feature requests that grow this
 toward a desktop environment will be declined kindly.
 
