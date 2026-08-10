@@ -45,6 +45,8 @@ timings, thresholds, click commands) and applies live on save.
 - **Expo** — alt-tab-style window switcher with live `ScreencopyView`
   previews, MRU order, keyboard and mouse.
 
+  ![expo](assets/expo.png)
+
 Deliberately **not** in the box: a launcher, a lock screen, wallpaper
 handling. Those stay external (the launcher button and lock button run
 whatever commands you configure).
