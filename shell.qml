@@ -3,6 +3,7 @@
 pragma ComponentBehavior: Bound
 import QtQuick
 import Quickshell
+import Quickshell.Hyprland
 import Quickshell.Io
 
 ShellRoot {
@@ -51,6 +52,20 @@ ShellRoot {
         function onScreensChanged() {
             if (root.barVisible)
                 healOff.restart();
+            resync.restart();
+        }
+    }
+
+    // quickshell can miss moveworkspace events during the replug churn,
+    // leaving workspace->monitor links stale (pills dim on the wrong bar):
+    // re-query Hyprland once the screen list settles
+    Timer {
+        id: resync
+        interval: 1000
+        onTriggered: {
+            Hyprland.refreshMonitors();
+            Hyprland.refreshWorkspaces();
+            Hyprland.refreshToplevels();
         }
     }
 
