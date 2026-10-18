@@ -1,6 +1,7 @@
 singleton Theme 1.0 Theme.qml
 singleton Config 1.0 Config.qml
 singleton Screens 1.0 Screens.qml
+singleton Idle 1.0 Idle.qml
 singleton AppIcon 1.0 AppIcon.qml
 PressPulse 1.0 PressPulse.qml
 AnchoredPopup 1.0 AnchoredPopup.qml

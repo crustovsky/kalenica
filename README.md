@@ -37,6 +37,11 @@ timings, thresholds, click commands) and applies live on save.
 
   ![notification](assets/notification.png)
 - **OSD**: volume, microphone, screen and keyboard backlight.
+- **OLED care**: on idle the bar fades its content, then every panel dims
+  (laptop backlight and keyboard backlight via `brightnessctl`, external
+  monitors over DDC/CI), both through `ext-idle-notify` so idle inhibitors
+  are honoured. Lock, screen-off and suspend stay with hypridle
+  ([`examples/hypridle.conf`](examples/hypridle.conf)).
 
   ![osd](assets/osd.png)
 - **Screenshots**: full screen, active window, or drag-select area with a
@@ -79,7 +84,9 @@ systemctl --user enable --now quickshell.service
 ```
 
 Hyprland integration (the blur layer rule and the keybinds that drive the
-IPC entry points) is in [`examples/hyprland.lua`](examples/hyprland.lua).
+IPC entry points) is in [`examples/hyprland.lua`](examples/hyprland.lua),
+a matching hypridle setup (lock/screen-off/suspend only; the shell does the
+idle dim itself) in [`examples/hypridle.conf`](examples/hypridle.conf).
 
 On first run a `config.json` with the defaults below is created next to
 `shell.qml`. Edits apply live; no reload needed.
@@ -97,6 +104,7 @@ On first run a `config.json` with the defaults below is created next to
 | `timing.drawerSlide` | `300` | ms, drawer expand |
 | `timing.tooltipDelay` | `150` | ms before tooltips show |
 | `timing.popupHoverClose` | `1500` | ms of hover-away before popups close |
+| `timing.idleFade` | `800` | ms, bar content fade on idle |
 | `modules.clock.format` | `dd MMM HH:mm:ss` | |
 | `modules.battery.low` / `.critical` | `20` / `10` | %, pulse / persistent alert |
 | `modules.notifications.timeout` | `5000` | ms, non-critical cards |
@@ -107,6 +115,8 @@ On first run a `config.json` with the defaults below is created next to
 | `modules.cpu.clickCommand` | `["resources"]` | CPU module click |
 | `modules.memory.clickCommand` | `["kitty", "--class", "btop", "btop"]` | memory module click |
 | `modules.audio.rightClickCommand` | `["kitty", "--class", "Cava", "cava"]` | volume module right-click |
+| `modules.idle.barDim` / `.barDimOpacity` | `45` / `0.3` | s of no input before the bar content fades, and to what (0 = never) |
+| `modules.idle.brightnessDim` / `.brightnessDimLevel` | `150` / `10` | s of no input before the panels dim, and to what % (0 = never) |
 
 Animation shapes, layout and geometry are not configurable on purpose.
 
