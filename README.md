@@ -37,11 +37,14 @@ timings, thresholds, click commands) and applies live on save.
 
   ![notification](assets/notification.png)
 - **OSD**: volume, microphone, screen and keyboard backlight.
-- **OLED care**: on idle the bar fades its content, then every panel dims
-  (laptop backlight and keyboard backlight via `brightnessctl`, external
-  monitors over DDC/CI), both through `ext-idle-notify` so idle inhibitors
-  are honoured. Lock, screen-off and suspend stay with hypridle
+- **Idle dim**: after a while without input every panel dims (laptop
+  backlight and keyboard backlight via `brightnessctl`, external monitors
+  over DDC/CI addressed by EDID model), honouring idle inhibitors. Lock,
+  screen-off and suspend stay with hypridle
   ([`examples/hypridle.conf`](examples/hypridle.conf)).
+- **OLED care** (`theme.oled`): the bar fades its content on a shorter idle
+  and ignores inhibitors while doing so (a movie keeps the picture on, not
+  the bar burning in), and the resting foreground sits lower.
 
   ![osd](assets/osd.png)
 - **Screenshots**: full screen, active window, or drag-select area with a
@@ -99,6 +102,7 @@ On first run a `config.json` with the defaults below is created next to
 | `theme.barAlpha` | `0.7` | bar translucency (calibrated against blur, see examples) |
 | `theme.notificationAlpha` | `0.5` | card translucency |
 | `theme.font.family` / `.size` | `Iosevka Nerd Font` / `14` | |
+| `theme.oled` | `true` | burn-in care: idle bar fade, resting fg 0.6 instead of 0.75 |
 | `timing.hoverFade` | `120` | ms, hover highlight fade |
 | `timing.popupGrow` | `200` | ms, popup scale-in |
 | `timing.drawerSlide` | `300` | ms, drawer expand |
@@ -115,7 +119,7 @@ On first run a `config.json` with the defaults below is created next to
 | `modules.cpu.clickCommand` | `["resources"]` | CPU module click |
 | `modules.memory.clickCommand` | `["kitty", "--class", "btop", "btop"]` | memory module click |
 | `modules.audio.rightClickCommand` | `["kitty", "--class", "Cava", "cava"]` | volume module right-click |
-| `modules.idle.barDim` / `.barDimOpacity` | `45` / `0.3` | s of no input before the bar content fades, and to what (0 = never) |
+| `modules.idle.barDim` / `.barDimOpacity` | `45` / `0.3` | s of no input before the bar content fades, and to what (0 = never; needs `theme.oled`) |
 | `modules.idle.brightnessDim` / `.brightnessDimLevel` | `150` / `10` | s of no input before the panels dim, and to what % (0 = never) |
 
 Animation shapes, layout and geometry are not configurable on purpose.

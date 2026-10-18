@@ -4,8 +4,8 @@ import Quickshell
 
 // Palette bases and font come from config.json (Config.theme); the alphas
 // composed here are relationships, not preferences — the fg emphasis ladder
-// (0.6/0.4/0.25; the top rung sits low on purpose, the bar is the most
-// static thing an OLED panel shows) and the blur-calibrated bar/notification
+// (0.75/0.4/0.25, the top rung dropping to 0.6 on an OLED panel: the bar is
+// the most static thing it shows) and the blur-calibrated bar/notification
 // translucency (Config.theme.barAlpha/notificationAlpha). Colors originally
 // lifted from waybar's style.css (Catppuccin-ish).
 Singleton {
@@ -13,7 +13,7 @@ Singleton {
     readonly property real barAlpha: Config.theme.barAlpha
 
     readonly property color bg: Qt.alpha(palette.background, barAlpha)
-    readonly property color fg: Qt.alpha(palette.foreground, 0.6)
+    readonly property color fg: Qt.alpha(palette.foreground, Config.theme.oled ? 0.6 : 0.75)
     readonly property color fgHover: Qt.alpha(palette.hoverForeground, barAlpha)
     readonly property color bgHover: Qt.alpha(palette.foreground, barAlpha)
 

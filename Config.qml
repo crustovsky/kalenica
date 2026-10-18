@@ -42,6 +42,9 @@ Singleton {
         property real barAlpha: 0.7
         property real notificationAlpha: 0.5
         property FontConfig font: FontConfig {}
+        // OLED panel: enables the burn-in care (idle bar fade, lower resting
+        // fg); the idle brightness dim is independent of this
+        property bool oled: true
     }
 
     component TimingConfig: JsonObject {
@@ -94,10 +97,11 @@ Singleton {
         property list<string> rightClickCommand: ["kitty", "--class", "Cava", "cava"]
     }
 
-    // OLED care, seconds of no input (0 = off): barDim fades the bar content
-    // to barDimOpacity; brightnessDim takes the panels to brightnessDimLevel
-    // percent (laptop panel + keyboard backlight via brightnessctl, the
-    // external monitor via DDC/CI). Both respect idle inhibitors.
+    // Seconds of no input (0 = off): barDim fades the bar content to
+    // barDimOpacity (OLED care, ignores idle inhibitors: a movie is no reason
+    // to let the bar burn in); brightnessDim takes the panels to
+    // brightnessDimLevel percent (laptop panel + keyboard backlight via
+    // brightnessctl, external monitors via DDC/CI) and does respect them.
     component IdleConfig: JsonObject {
         property int barDim: 45
         property real barDimOpacity: 0.3

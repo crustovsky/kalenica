@@ -18,21 +18,21 @@ Scope {
     required property var osd
 
     property string pending // raise/lower in flight while cursorpos runs
-    property string target  // monitor name the in-flight adjustment is for
-    // In-memory DDC cache (reads are slow; the old script used /tmp for
-    // this). -1 = unknown: the next press fetches, then applies itself.
-    property int ddcBrightness: -1
-    // what the fetch in flight is for: "adjust" (a key) or "dim" (idle)
-    property string ddcAfterFetch: "adjust"
-    // pre-dim DDC level to restore on resume, -1 = not dimmed
-    property int ddcSaved: -1
+    property string target  // laptop panel name the in-flight adjustment is for
+    // DDC/CI state per external monitor, keyed by connector name: the level
+    // cache (reads are slow; the old script used /tmp for this) and the
+    // pre-dim level while dimmed. An unknown level fetches first, then
+    // applies the press/dim that asked for it.
+    property var ddcLevel: ({})
+    property var ddcSaved: ({})
+    // the fetch in flight: which monitor, and "adjust" (a key) or "dim" (idle)
+    property string ddcFetchTarget
+    property string ddcAfterFetch
 
     readonly property string icon: "󰃠"
 
     readonly property bool hasLaptopPanel:
-        Hyprland.monitors.values.some(m => m.name.startsWith("eDP"))
-    readonly property bool hasDdcMonitor:
-        Hyprland.monitors.values.some(m => !m.name.startsWith("eDP"))
+        Hyprland.monitors.values.some(m => root.isLaptop(m))
 
     IpcHandler {
         target: "brightness"
@@ -50,8 +50,8 @@ Scope {
     Connections {
         target: Hyprland.monitors
         function onValuesChanged() {
-            root.ddcBrightness = -1;
-            root.ddcSaved = -1;
+            root.ddcLevel = {};
+            root.ddcSaved = {};
         }
     }
 
@@ -65,22 +65,40 @@ Scope {
         }
     }
 
+    function isLaptop(mon: var): bool {
+        return mon.name.startsWith("eDP");
+    }
+
+    function externals(): var {
+        return Hyprland.monitors.values.filter(m => !isLaptop(m));
+    }
+
+    // ddcutil display selection by EDID model (Hyprland reports it in the
+    // monitor's IPC object); the -d index shifts with what is plugged in
+    function ddcSelect(mon: var): var {
+        const model = mon.lastIpcObject?.model ?? "";
+        return model !== "" ? ["--model", model] : ["-d", "1"];
+    }
+
     function dim() {
         const level = Config.modules.idle.brightnessDimLevel;
         if (hasLaptopPanel)
             Quickshell.execDetached(["brightnessctl", "-s", "set", `${level}%`]);
         Quickshell.execDetached(["brightnessctl", "-s", "-d", "platform::kbd_backlight", "set", "0"]);
-        if (hasDdcMonitor)
-            dimDdc();
+        for (const m of externals())
+            dimDdc(m);
     }
 
     function restore() {
         if (hasLaptopPanel)
             Quickshell.execDetached(["brightnessctl", "-r"]);
         Quickshell.execDetached(["brightnessctl", "-r", "-d", "platform::kbd_backlight"]);
-        if (ddcSaved >= 0) {
-            setDdc(ddcSaved);
-            ddcSaved = -1;
+        for (const m of externals()) {
+            const saved = ddcSaved[m.name];
+            if (saved !== undefined) {
+                delete ddcSaved[m.name];
+                setDdc(m, saved);
+            }
         }
     }
 
@@ -98,52 +116,57 @@ Scope {
                 && m.y <= cy && cy < m.y + m.height / m.scale)
                 return m;
         }
-        return mons.find(m => m.name.startsWith("eDP")) ?? mons[0] ?? null;
+        return mons.find(m => isLaptop(m)) ?? mons[0] ?? null;
     }
 
     function dispatch(cx: int, cy: int) {
         const mon = monitorAt(cx, cy);
         if (mon === null)
             return;
-        target = mon.name;
-        if (mon.name.startsWith("eDP"))
+        if (isLaptop(mon)) {
+            target = mon.name;
             laptopProc.exec(["brightnessctl", "-m", "set",
                              pending === "raise" ? "5%+" : "5%-"]);
-        else
-            adjustDdc();
+        } else
+            adjustDdc(mon);
     }
 
-    function fetchDdc(then: string) {
+    function fetchDdc(mon: var, then: string) {
+        if (ddcGetProc.running) // one read at a time; the next press/idle retries
+            return;
+        ddcFetchTarget = mon.name;
         ddcAfterFetch = then;
-        if (!ddcGetProc.running)
-            ddcGetProc.exec(["ddcutil", "getvcp", "10", "-d", "1",
-                             "--brief", "--sleep-multiplier", "0.1"]);
+        ddcGetProc.exec(["ddcutil", "getvcp", "10", ...ddcSelect(mon),
+                         "--brief", "--sleep-multiplier", "0.1"]);
     }
 
-    function setDdc(value: int) {
-        ddcBrightness = value;
-        Quickshell.execDetached(["ddcutil", "setvcp", "10", String(value),
-                                 "-d", "1", "--noverify", "--sleep-multiplier", "0.1"]);
+    function setDdc(mon: var, value: int) {
+        ddcLevel[mon.name] = value;
+        Quickshell.execDetached(["ddcutil", "setvcp", "10", String(value), ...ddcSelect(mon),
+                                 "--noverify", "--sleep-multiplier", "0.1"]);
     }
 
-    function adjustDdc() {
-        if (ddcBrightness < 0) {
-            fetchDdc("adjust");
+    function adjustDdc(mon: var) {
+        const cur = ddcLevel[mon.name];
+        if (cur === undefined) {
+            fetchDdc(mon, "adjust");
             return; // resumes from ddcGetProc when the value lands
         }
         const step = pending === "raise" ? 5 : -5;
-        setDdc(Math.max(5, Math.min(100, ddcBrightness + step)));
-        osd.showOn(target, icon, ddcBrightness / 100, false);
+        const next = Math.max(5, Math.min(100, cur + step));
+        setDdc(mon, next);
+        osd.showOn(mon.name, icon, next / 100, false);
     }
 
-    function dimDdc() {
-        if (ddcBrightness < 0) {
-            fetchDdc("dim");
+    function dimDdc(mon: var) {
+        const cur = ddcLevel[mon.name];
+        if (cur === undefined) {
+            fetchDdc(mon, "dim");
             return;
         }
-        if (ddcSaved < 0)
-            ddcSaved = ddcBrightness;
-        setDdc(Math.min(ddcBrightness, Config.modules.idle.brightnessDimLevel));
+        if (ddcSaved[mon.name] === undefined)
+            ddcSaved[mon.name] = cur;
+        setDdc(mon, Math.min(cur, Config.modules.idle.brightnessDimLevel));
     }
 
     Process {
@@ -173,15 +196,18 @@ Scope {
         stdout: StdioCollector {
             // --brief: "VCP 10 C <current> <max>"
             onStreamFinished: {
+                const mon = Hyprland.monitors.values.find(m => m.name === root.ddcFetchTarget);
+                if (mon === undefined) // unplugged while reading
+                    return;
                 const cur = parseInt(text.trim().split(/\s+/)[3]);
-                root.ddcBrightness = isNaN(cur) ? 50 : cur;
+                root.ddcLevel[mon.name] = isNaN(cur) ? 50 : cur;
                 // apply what triggered the fetch; a dim only if still idle
                 // (the read is slow enough for the user to have come back)
                 if (root.ddcAfterFetch === "dim") {
                     if (Idle.brightnessIdle)
-                        root.dimDdc();
+                        root.dimDdc(mon);
                 } else
-                    root.adjustDdc();
+                    root.adjustDdc(mon);
             }
         }
     }
