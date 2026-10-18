@@ -50,6 +50,7 @@ Singleton {
         property int drawerSlide: 300
         property int tooltipDelay: 150
         property int popupHoverClose: 1500
+        property int idleFade: 800
     }
 
     component ClockConfig: JsonObject {
@@ -93,6 +94,17 @@ Singleton {
         property list<string> rightClickCommand: ["kitty", "--class", "Cava", "cava"]
     }
 
+    // OLED care, seconds of no input (0 = off): barDim fades the bar content
+    // to barDimOpacity; brightnessDim takes the panels to brightnessDimLevel
+    // percent (laptop panel + keyboard backlight via brightnessctl, the
+    // external monitor via DDC/CI). Both respect idle inhibitors.
+    component IdleConfig: JsonObject {
+        property int barDim: 45
+        property real barDimOpacity: 0.3
+        property int brightnessDim: 150
+        property int brightnessDimLevel: 10
+    }
+
     component ModulesConfig: JsonObject {
         property ClockConfig clock: ClockConfig {}
         property BatteryConfig battery: BatteryConfig {}
@@ -104,6 +116,7 @@ Singleton {
         property CpuConfig cpu: CpuConfig {}
         property MemoryConfig memory: MemoryConfig {}
         property AudioConfig audio: AudioConfig {}
+        property IdleConfig idle: IdleConfig {}
     }
 
     FileView {

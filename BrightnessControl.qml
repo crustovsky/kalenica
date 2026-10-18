@@ -7,6 +7,11 @@ import Quickshell.Hyprland
 // monitor under the cursor — laptop panel (eDP*) via brightnessctl, anything
 // else via ddcutil DDC/CI — and reports to the OSD. Keybinds call
 // `qs ipc call brightness raise|lower`.
+//
+// Also the idle dim that used to be a hypridle listener (brightnessctl -s/-r
+// plus a ddcutil script): after modules.idle.brightnessDim seconds every
+// panel drops to brightnessDimLevel and comes back on input. In-process so
+// the DDC cache below stays the truth the keys adjust against.
 Scope {
     id: root
 
@@ -17,8 +22,17 @@ Scope {
     // In-memory DDC cache (reads are slow; the old script used /tmp for
     // this). -1 = unknown: the next press fetches, then applies itself.
     property int ddcBrightness: -1
+    // what the fetch in flight is for: "adjust" (a key) or "dim" (idle)
+    property string ddcAfterFetch: "adjust"
+    // pre-dim DDC level to restore on resume, -1 = not dimmed
+    property int ddcSaved: -1
 
     readonly property string icon: "󰃠"
+
+    readonly property bool hasLaptopPanel:
+        Hyprland.monitors.values.some(m => m.name.startsWith("eDP"))
+    readonly property bool hasDdcMonitor:
+        Hyprland.monitors.values.some(m => !m.name.startsWith("eDP"))
 
     IpcHandler {
         target: "brightness"
@@ -37,6 +51,36 @@ Scope {
         target: Hyprland.monitors
         function onValuesChanged() {
             root.ddcBrightness = -1;
+            root.ddcSaved = -1;
+        }
+    }
+
+    Connections {
+        target: Idle
+        function onBrightnessIdleChanged() {
+            if (Idle.brightnessIdle)
+                root.dim();
+            else
+                root.restore();
+        }
+    }
+
+    function dim() {
+        const level = Config.modules.idle.brightnessDimLevel;
+        if (hasLaptopPanel)
+            Quickshell.execDetached(["brightnessctl", "-s", "set", `${level}%`]);
+        Quickshell.execDetached(["brightnessctl", "-s", "-d", "platform::kbd_backlight", "set", "0"]);
+        if (hasDdcMonitor)
+            dimDdc();
+    }
+
+    function restore() {
+        if (hasLaptopPanel)
+            Quickshell.execDetached(["brightnessctl", "-r"]);
+        Quickshell.execDetached(["brightnessctl", "-r", "-d", "platform::kbd_backlight"]);
+        if (ddcSaved >= 0) {
+            setDdc(ddcSaved);
+            ddcSaved = -1;
         }
     }
 
@@ -69,19 +113,37 @@ Scope {
             adjustDdc();
     }
 
+    function fetchDdc(then: string) {
+        ddcAfterFetch = then;
+        if (!ddcGetProc.running)
+            ddcGetProc.exec(["ddcutil", "getvcp", "10", "-d", "1",
+                             "--brief", "--sleep-multiplier", "0.1"]);
+    }
+
+    function setDdc(value: int) {
+        ddcBrightness = value;
+        Quickshell.execDetached(["ddcutil", "setvcp", "10", String(value),
+                                 "-d", "1", "--noverify", "--sleep-multiplier", "0.1"]);
+    }
+
     function adjustDdc() {
         if (ddcBrightness < 0) {
-            if (!ddcGetProc.running)
-                ddcGetProc.exec(["ddcutil", "getvcp", "10", "-d", "1",
-                                 "--brief", "--sleep-multiplier", "0.1"]);
+            fetchDdc("adjust");
             return; // resumes from ddcGetProc when the value lands
         }
         const step = pending === "raise" ? 5 : -5;
-        ddcBrightness = Math.max(5, Math.min(100, ddcBrightness + step));
-        Quickshell.execDetached(["ddcutil", "setvcp", "10",
-                                 String(ddcBrightness), "-d", "1",
-                                 "--noverify", "--sleep-multiplier", "0.1"]);
+        setDdc(Math.max(5, Math.min(100, ddcBrightness + step)));
         osd.showOn(target, icon, ddcBrightness / 100, false);
+    }
+
+    function dimDdc() {
+        if (ddcBrightness < 0) {
+            fetchDdc("dim");
+            return;
+        }
+        if (ddcSaved < 0)
+            ddcSaved = ddcBrightness;
+        setDdc(Math.min(ddcBrightness, Config.modules.idle.brightnessDimLevel));
     }
 
     Process {
@@ -113,7 +175,13 @@ Scope {
             onStreamFinished: {
                 const cur = parseInt(text.trim().split(/\s+/)[3]);
                 root.ddcBrightness = isNaN(cur) ? 50 : cur;
-                root.adjustDdc(); // apply the press that triggered the fetch
+                // apply what triggered the fetch; a dim only if still idle
+                // (the read is slow enough for the user to have come back)
+                if (root.ddcAfterFetch === "dim") {
+                    if (Idle.brightnessIdle)
+                        root.dimDdc();
+                } else
+                    root.adjustDdc();
             }
         }
     }
