@@ -36,7 +36,8 @@ timings, thresholds, click commands) and applies live on save.
   cards with icons and action buttons, critical urgency never auto-expires.
 
   ![notification](assets/notification.png)
-- **OSD**: volume, microphone, screen and keyboard backlight.
+- **OSD**: volume, microphone, screen and keyboard backlight, plus a text
+  mode for one-line toasts.
 - **Idle dim**: after a while without input every panel dims (laptop
   backlight and keyboard backlight via `brightnessctl`, external monitors
   over DDC/CI addressed by EDID model), honouring idle inhibitors. Lock,
@@ -49,7 +50,8 @@ timings, thresholds, click commands) and applies live on save.
   ![osd](assets/osd.png)
 - **Screenshots**: full screen, active window, or drag-select area with a
   post-drag adjust mode (resize/move the region, arrow-key nudge, x/y/w/h
-  readout); saved dated to disk, copied to the clipboard, notified.
+  readout); saved dated to disk, copied to the clipboard, announced by an
+  in-shell notification card with an Open action.
 - **Expo**: alt-tab-style window switcher with live `ScreencopyView`
   previews, MRU order, keyboard and mouse.
 
@@ -133,6 +135,7 @@ Everything interactive that a keybind should reach goes through `qs ipc`:
 | `qs ipc call bar toggle` | hide/show the bar |
 | `qs ipc call brightness raise` / `lower` | screen brightness + OSD |
 | `qs ipc call osd kbdlight` | keyboard backlight OSD |
+| `qs ipc call osd text <icon> <text>` | one-line toast on the OSD card (scale/layout cyclers) |
 | `qs ipc call screenshot screen` / `active` / `area` | screenshots |
 | `qs ipc call expo toggle` | window switcher |
 

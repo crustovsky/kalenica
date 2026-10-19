@@ -7,7 +7,9 @@ import Quickshell.Services.Pipewire
 // Volume OSD replacing swayosd: a centered card near the bottom of the
 // focused monitor, shown on any default-sink volume/mute change (keybinds,
 // bar scroll, apps) and hidden 1.5s after the last one. show() is generic
-// (icon + 0..1 value), the scaffold for the brightness OSD later.
+// (icon + 0..1 value); showText() swaps the bar for a short line, for
+// toasts that used to be 1s notifications (`qs ipc call osd text <icon>
+// <text>` from the Hyprland scale/layout cyclers).
 Scope {
     id: root
 
@@ -29,6 +31,8 @@ Scope {
     property string icon
     property real value
     property bool dimmed: false
+    // non-empty: text mode (no bar)
+    property string text: ""
     // when set, the OSD shows on this monitor instead of the focused one
     // (brightness targets the monitor under the cursor)
     property string screenOverride: ""
@@ -44,6 +48,15 @@ Scope {
         root.icon = icon;
         root.value = Math.max(0, Math.min(1, value));
         root.dimmed = dimmed;
+        root.text = "";
+        panel.visible = true;
+        hideTimer.restart();
+    }
+
+    function showText(icon: string, text: string) {
+        root.screenOverride = "";
+        root.icon = icon;
+        root.text = text;
         panel.visible = true;
         hideTimer.restart();
     }
@@ -116,6 +129,10 @@ Scope {
         function kbdlight(): void {
             kbdTimer.restart();
         }
+
+        function text(icon: string, text: string): void {
+            root.showText(icon, text);
+        }
     }
 
     Timer {
@@ -182,8 +199,16 @@ Scope {
                     color: Theme.notifFg
                 }
 
+                BarText {
+                    anchors.verticalCenter: parent.verticalCenter
+                    visible: root.text !== ""
+                    text: root.text
+                    color: Theme.notifFg
+                }
+
                 Rectangle {
                     anchors.verticalCenter: parent.verticalCenter
+                    visible: root.text === ""
                     width: 160
                     height: 6
                     radius: 3
@@ -199,6 +224,7 @@ Scope {
 
                 BarText {
                     anchors.verticalCenter: parent.verticalCenter
+                    visible: root.text === ""
                     width: 44
                     horizontalAlignment: Text.AlignRight
                     text: `${Math.round(root.value * 100)}%`
