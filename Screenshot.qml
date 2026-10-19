@@ -5,7 +5,8 @@ import Quickshell.Io
 import Quickshell.Wayland
 
 // Native screenshots (replaced grimblast 2026-07-16): dated png to ~/Pictures,
-// wl-copy to clipboard, notify on save — `qs ipc call screenshot
+// wl-copy to clipboard, in-shell notification card with an Open action on
+// save — `qs ipc call screenshot
 // screen|active|area`. screen = focused monitor, active = focused window
 // (via ToplevelManager, so no geometry math), area = slurp-style drag
 // selection that holds for adjustment (edge/corner resize, interior move,
@@ -22,6 +23,8 @@ import Quickshell.Wayland
 Scope {
     id: root
 
+    required property var notifications
+
     property bool selecting: false
     // non-null while a screen/active capture is in flight; doubles as the
     // busy guard for all three modes
@@ -36,10 +39,12 @@ Scope {
     }
 
     function finish(file: string, what: string): void {
-        // fixed filename format: no quoting hazards
-        proc.exec(["sh", "-c",
-            `wl-copy --type image/png < ${file} && ` +
-            `notify-send -i ${file} Screenshot '${what} copied to buffer and saved to ${file}'`]);
+        // the redirect needs a shell; the path rides in as $1, not in the text
+        proc.exec(["sh", "-c", 'wl-copy --type image/png < "$1"', "sh", file]);
+        notifications.notify("Screenshot",
+            `${what} copied to buffer and saved to ${file}`, "file://" + file,
+            [{ identifier: "open", text: "Open",
+               invoke: () => Quickshell.execDetached(["xdg-open", file]) }]);
     }
 
     Process {

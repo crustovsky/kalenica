@@ -9,7 +9,46 @@ import Quickshell.Widgets
 // focused monitor (approximates dunst's follow=mouse). Left-click dismisses,
 // right-click dismisses all, middle-click runs the default action. Styling
 // (offsets, padding, frame, radius, 5s timeout) mirrors the old dunstrc.
+// The shell's own notifications (screenshots) skip D-Bus: notify() queues a
+// LocalNotification with the same interface the card reads off a Notification.
 Scope {
+    id: root
+
+    property var local: []
+
+    // actions: [{ identifier, text, invoke() }]; the first one doubles as
+    // the middle-click default
+    function notify(summary: string, body: string, image: string, actions: var): void {
+        const n = localNotification.createObject(root, {
+            summary: summary, body: body, image: image, actions: actions });
+        local = [...local, n];
+    }
+
+    component LocalNotification: QtObject {
+        id: ln
+        property string summary
+        property string body
+        property string image: ""
+        readonly property string appIcon: ""
+        readonly property int urgency: NotificationUrgency.Normal
+        readonly property int expireTimeout: -1
+        property var actions: []
+
+        function dismiss(): void {
+            root.local = root.local.filter(n => n !== ln);
+            ln.destroy();
+        }
+
+        function expire(): void {
+            dismiss();
+        }
+    }
+
+    Component {
+        id: localNotification
+        LocalNotification {}
+    }
+
     NotificationServer {
         id: server
         actionsSupported: true
@@ -18,10 +57,17 @@ Scope {
         onNotification: n => n.tracked = true
     }
 
+    // diffed, so a card arriving or leaving doesn't rebuild (and re-time)
+    // the others
+    ScriptModel {
+        id: cards
+        values: [...server.trackedNotifications.values, ...root.local]
+    }
+
     PanelWindow {
         screen: Screens.focused()
 
-        visible: server.trackedNotifications.values.length > 0
+        visible: cards.values.length > 0
         anchors {
             top: true
             right: true
@@ -43,7 +89,7 @@ Scope {
             spacing: 8
 
             Repeater {
-                model: server.trackedNotifications
+                model: cards
 
                 Rectangle {
                     id: card
@@ -81,7 +127,7 @@ Scope {
                             if (mouse.button === Qt.LeftButton) {
                                 card.modelData.dismiss();
                             } else if (mouse.button === Qt.RightButton) {
-                                for (const n of [...server.trackedNotifications.values])
+                                for (const n of [...cards.values])
                                     n.dismiss();
                             } else {
                                 const actions = card.modelData.actions;

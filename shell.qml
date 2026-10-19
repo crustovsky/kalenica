@@ -18,7 +18,9 @@ ShellRoot {
         }
     }
 
-    Notifications {}
+    Notifications {
+        id: notifications
+    }
 
     Osd {
         id: osd
@@ -32,7 +34,9 @@ ShellRoot {
     Expo {}
 
     // qs ipc call screenshot screen|active|area
-    Screenshot {}
+    Screenshot {
+        notifications: notifications
+    }
 
     // toggle with: qs ipc call bar toggle
     IpcHandler {
