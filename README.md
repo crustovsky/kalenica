@@ -34,7 +34,9 @@ timings, thresholds, click commands) and applies live on save.
   connect, password prompt for new secured networks, right-click the icon
   for radio off), bluetooth devices incl. scan/pair mode.
 - **Notifications**: a full `org.freedesktop.Notifications` daemon:
-  cards with icons and action buttons, critical urgency never auto-expires.
+  cards with icons and action buttons, critical urgency never auto-expires,
+  hovering the stack holds the cards, a fullscreen window covers them
+  (Top layer, not Overlay).
 
   ![notification](assets/notification.png)
 - **OSD**: volume, microphone, screen and keyboard backlight, plus a text

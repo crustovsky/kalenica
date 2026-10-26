@@ -79,7 +79,9 @@ Scope {
         }
         exclusionMode: ExclusionMode.Normal
         exclusiveZone: 0
-        WlrLayershell.layer: WlrLayer.Overlay
+        // Top, not Overlay: a fullscreen window (movie, game) covers the
+        // stack instead of being interrupted by it; cards wait underneath
+        WlrLayershell.layer: WlrLayer.Top
         WlrLayershell.namespace: "kalenica-notifications"
         color: "transparent"
         implicitWidth: 350
