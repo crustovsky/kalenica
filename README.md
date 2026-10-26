@@ -89,8 +89,9 @@ Run it with `qs`, or as a systemd user service bound to the session
 systemctl --user enable --now quickshell.service
 ```
 
-Hyprland integration (the blur layer rule and the keybinds that drive the
-IPC entry points) is in [`examples/hyprland.lua`](examples/hyprland.lua),
+Hyprland integration (the blur layer rule, one per surface kind via the
+`kalenica-*` layer namespaces, and the keybinds that drive the IPC entry
+points) is in [`examples/hyprland.lua`](examples/hyprland.lua),
 a matching hypridle setup (lock/screen-off/suspend only; the shell does the
 idle dim itself) in [`examples/hypridle.conf`](examples/hypridle.conf).
 

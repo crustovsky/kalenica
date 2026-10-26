@@ -16,10 +16,10 @@ import Quickshell.Wayland
 // grabToImage at source resolution; paintCursor stays off, so grimblast's
 // cursor-hiding virtual monitor (which blinked the bar via the
 // screensChanged auto-heal) has no equivalent here. The selection overlay
-// gets its own layer namespace — the ^quickshell$ xray blur rule would hide
-// the very windows being selected. Area crops grab a frozen full-screen
-// view inside a clip wrapper, captured ~60ms after the dim chrome hides so
-// the compositor has a clean frame up.
+// stays out of the blur layer rule (its namespace is not matched): xray
+// would hide the very windows being selected. Area crops grab a frozen
+// full-screen view inside a clip wrapper, captured ~60ms after the dim
+// chrome hides so the compositor has a clean frame up.
 Scope {
     id: root
 
@@ -93,7 +93,7 @@ Scope {
         implicitHeight: 1
         color: "transparent"
         exclusionMode: ExclusionMode.Ignore
-        WlrLayershell.namespace: "quickshell-screenshot"
+        WlrLayershell.namespace: "kalenica-screenshot"
 
         Loader {
             active: root.fullSource !== null
@@ -165,7 +165,7 @@ Scope {
             }
             exclusionMode: ExclusionMode.Ignore
             WlrLayershell.layer: WlrLayer.Overlay
-            WlrLayershell.namespace: "quickshell-screenshot"
+            WlrLayershell.namespace: "kalenica-screenshot"
             WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
             color: "transparent"
 

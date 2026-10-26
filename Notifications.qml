@@ -80,6 +80,7 @@ Scope {
         exclusionMode: ExclusionMode.Normal
         exclusiveZone: 0
         WlrLayershell.layer: WlrLayer.Overlay
+        WlrLayershell.namespace: "kalenica-notifications"
         color: "transparent"
         implicitWidth: 350
         implicitHeight: column.implicitHeight

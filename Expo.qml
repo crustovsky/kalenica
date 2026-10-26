@@ -70,6 +70,7 @@ Scope {
         // no anchors: the compositor centers an unanchored layer surface
         exclusionMode: ExclusionMode.Ignore
         WlrLayershell.layer: WlrLayer.Overlay
+        WlrLayershell.namespace: "kalenica-expo"
         WlrLayershell.keyboardFocus: visible ? WlrKeyboardFocus.Exclusive
                                              : WlrKeyboardFocus.None
         color: "transparent"

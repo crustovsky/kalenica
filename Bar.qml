@@ -1,5 +1,6 @@
 import QtQuick
 import Quickshell
+import Quickshell.Wayland
 
 PanelWindow {
     id: bar
@@ -7,6 +8,9 @@ PanelWindow {
     required property var modelData
     screen: modelData
 
+    // every surface kind has its own namespace so layer rules can tell them
+    // apart (see examples/hyprland.lua); popups ride on the bar's via blur_popups
+    WlrLayershell.namespace: "kalenica-bar"
     anchors {
         top: true
         left: true

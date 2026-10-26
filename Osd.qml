@@ -130,6 +130,7 @@ Scope {
         exclusionMode: ExclusionMode.Normal
         exclusiveZone: 0
         WlrLayershell.layer: WlrLayer.Overlay
+        WlrLayershell.namespace: "kalenica-osd"
         color: "transparent"
         implicitWidth: card.implicitWidth
         implicitHeight: card.implicitHeight

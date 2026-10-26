@@ -1,16 +1,20 @@
 -- kalenica ⇄ Hyprland integration (native Lua config, Hyprland 0.55+).
 -- Merge these into your own config files; nothing here is loaded directly.
 
--- Blur behind the bar and its popups. xray = true blurs the wallpaper
--- instead of the windows beneath, so window damage never flickers the bar;
--- theme.barAlpha in config.json is calibrated against this.
+-- Blur behind the shell surfaces. xray = true blurs the wallpaper instead
+-- of the windows beneath, so window damage never flickers the bar;
+-- theme.barAlpha in config.json is calibrated against this. Each surface
+-- kind has its own layer namespace (kalenica-bar, -notifications, -osd,
+-- -expo, -dialog) so one of them can get its own rule; the screenshot
+-- overlay (kalenica-screenshot) is left unmatched on purpose, xray would
+-- hide the windows being selected.
 hl.layer_rule({
-    name = "quickshell-blur",
+    name = "kalenica-blur",
     blur = true,
     blur_popups = true,
     xray = true,
     ignore_alpha = 0,
-    match = { namespace = "^quickshell$" },
+    match = { namespace = "^kalenica-(bar|notifications|osd|expo|dialog)$" },
 })
 
 -- Keybinds driving the IPC entry points.
