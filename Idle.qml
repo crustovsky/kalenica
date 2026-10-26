@@ -9,10 +9,18 @@ import Quickshell.Wayland
 // regardless of idle inhibitors: a movie keeps the picture on, not the bar
 // burning in), BrightnessControl dims the panels after brightnessDim
 // (honouring inhibitors like hypridle did). Lock / screen-off / suspend stay
-// with hypridle (see examples/hypridle.conf).
+// with hypridle (see examples/hypridle.conf). `inhibited` is the power
+// menu's manual inhibitor toggle, one for all bars and kept across reloads.
 Singleton {
     readonly property bool barIdle: barMonitor.idle
     readonly property bool brightnessIdle: brightnessMonitor.idle
+    property alias inhibited: persist.inhibited
+
+    PersistentProperties {
+        id: persist
+        reloadableId: "idle"
+        property bool inhibited: false
+    }
 
     // An IdleMonitor (quickshell 0.3.2) goes silent after a runtime timeout
     // change, and config.json lands after startup, so a new value rebuilds

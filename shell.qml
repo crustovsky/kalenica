@@ -9,7 +9,14 @@ import Quickshell.Io
 ShellRoot {
     id: root
 
-    property bool barVisible: true
+    property alias barVisible: persist.barVisible
+
+    // toggles that must survive a config reload (editing any .qml file)
+    PersistentProperties {
+        id: persist
+        reloadableId: "shell"
+        property bool barVisible: true
+    }
 
     Variants {
         model: Quickshell.screens

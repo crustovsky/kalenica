@@ -5,11 +5,9 @@ import Quickshell.Wayland
 Drawer {
     id: root
 
-    property bool inhibitIdle: false
-
     IdleInhibitor {
         window: root.QsWindow.window
-        enabled: root.inhibitIdle
+        enabled: Idle.inhibited
     }
 
     ConfirmDialog { id: confirm }
@@ -21,9 +19,9 @@ Drawer {
     }
     BarItem {
         id: idle
-        tooltip: root.inhibitIdle ? "Idle inhibited" : "Idle not inhibited"
-        onClicked: root.inhibitIdle = !root.inhibitIdle
-        BarText { color: idle.fg; text: root.inhibitIdle ? "" : "" }
+        tooltip: Idle.inhibited ? "Idle inhibited" : "Idle not inhibited"
+        onClicked: Idle.inhibited = !Idle.inhibited
+        BarText { color: idle.fg; text: Idle.inhibited ? "" : "" }
     }
     BarItem {
         id: reboot
