@@ -25,8 +25,10 @@ ShellRoot {
         }
     }
 
+    // qs ipc call notifications dnd
     Notifications {
         id: notifications
+        osd: osd
     }
 
     Osd {

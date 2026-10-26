@@ -36,7 +36,7 @@ timings, thresholds, click commands) and applies live on save.
 - **Notifications**: a full `org.freedesktop.Notifications` daemon:
   cards with icons and action buttons, critical urgency never auto-expires,
   hovering the stack holds the cards, a fullscreen window covers them
-  (Top layer, not Overlay).
+  (Top layer, not Overlay), do not disturb over IPC queues them.
 
   ![notification](assets/notification.png)
 - **OSD**: volume, microphone, screen and keyboard backlight, plus a text
@@ -141,6 +141,7 @@ Everything interactive that a keybind should reach goes through `qs ipc`:
 | `qs ipc call brightness raise` / `lower` | screen brightness + OSD |
 | `qs ipc call osd kbdlight` | keyboard backlight OSD |
 | `qs ipc call osd text <icon> <text>` | one-line toast on the OSD card (scale/layout cyclers) |
+| `qs ipc call notifications dnd` | toggle do not disturb (cards queue, shown when it ends) |
 | `qs ipc call screenshot screen` / `active` / `area` | screenshots |
 | `qs ipc call expo toggle` | window switcher |
 

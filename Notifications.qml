@@ -9,13 +9,34 @@ import Quickshell.Widgets
 // focused monitor (approximates dunst's follow=mouse). Left-click dismisses,
 // right-click dismisses all, middle-click runs the default action; hovering
 // the stack holds every card. Styling (offsets, padding, frame, radius, 5s
-// timeout) mirrors the old dunstrc.
+// timeout) mirrors the old dunstrc. Do not disturb (`qs ipc call
+// notifications dnd`) works like dunst's pause: cards queue unseen with
+// their timers stopped and all appear when it ends.
 // The shell's own notifications (screenshots) skip D-Bus: notify() queues a
 // LocalNotification with the same interface the card reads off a Notification.
 Scope {
     id: root
 
+    required property var osd
+
     property var local: []
+    property alias dnd: persist.dnd
+
+    PersistentProperties {
+        id: persist
+        reloadableId: "notifications"
+        property bool dnd: false
+    }
+
+    IpcHandler {
+        target: "notifications"
+
+        function dnd(): void {
+            root.dnd = !root.dnd;
+            root.osd.showText(root.dnd ? "󰂛" : "󰂚",
+                              root.dnd ? "do not disturb" : "notifications on");
+        }
+    }
 
     // actions: [{ identifier, text, invoke() }]; the first one doubles as
     // the middle-click default
@@ -68,7 +89,7 @@ Scope {
     PanelWindow {
         screen: Screens.focused()
 
-        visible: cards.values.length > 0
+        visible: cards.values.length > 0 && !root.dnd
         anchors {
             top: true
             right: true
@@ -124,7 +145,7 @@ Scope {
                             ? card.modelData.expireTimeout
                             : Config.modules.notifications.timeout
                         running: card.modelData.urgency !== NotificationUrgency.Critical
-                            && !stackHover.hovered
+                            && !stackHover.hovered && !root.dnd
                         onTriggered: card.modelData.expire()
                     }
 
