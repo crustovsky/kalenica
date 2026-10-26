@@ -39,10 +39,12 @@ Scope {
     }
 
     // actions: [{ identifier, text, invoke() }]; the first one doubles as
-    // the middle-click default
-    function notify(summary: string, body: string, image: string, actions: var): void {
+    // the middle-click default. critical: orange frame, never auto-expires.
+    function notify(summary: string, body: string, image: string, actions: var,
+                    critical: bool): void {
         const n = localNotification.createObject(root, {
-            summary: summary, body: body, image: image, actions: actions });
+            summary: summary, body: body, image: image, actions: actions,
+            urgency: critical ? NotificationUrgency.Critical : NotificationUrgency.Normal });
         local = [...local, n];
     }
 
@@ -52,7 +54,7 @@ Scope {
         property string body
         property string image: ""
         readonly property string appIcon: ""
-        readonly property int urgency: NotificationUrgency.Normal
+        property int urgency: NotificationUrgency.Normal
         readonly property int expireTimeout: -1
         property var actions: []
 

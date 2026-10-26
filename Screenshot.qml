@@ -44,7 +44,7 @@ Scope {
         notifications.notify("Screenshot",
             `${what} copied to buffer and saved to ${file}`, "file://" + file,
             [{ identifier: "open", text: "Open",
-               invoke: () => Quickshell.execDetached(["xdg-open", file]) }]);
+               invoke: () => Quickshell.execDetached(["xdg-open", file]) }], false);
     }
 
     Process {

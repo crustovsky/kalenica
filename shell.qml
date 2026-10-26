@@ -35,6 +35,18 @@ ShellRoot {
         id: osd
     }
 
+    // one critical-battery card, not one per bar (Battery is per monitor),
+    // through the shell's own daemon rather than a notify-send round trip
+    Connections {
+        target: BatteryState
+
+        function onCriticalChanged() {
+            if (BatteryState.critical)
+                notifications.notify("Battery critical",
+                    `${BatteryState.pct}% remaining`, "", [], true);
+        }
+    }
+
     BrightnessControl {
         osd: osd
     }

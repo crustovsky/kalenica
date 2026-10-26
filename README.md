@@ -75,7 +75,7 @@ whatever commands you configure).
   glyphs.
 - CLI tools: `wpctl` (WirePlumber) for audio, `brightnessctl` for internal
   backlights, `ddcutil` for external-monitor brightness over DDC/CI,
-  `wl-copy` for screenshot clipboard, `notify-send` (libnotify).
+  `wl-copy` for screenshot clipboard.
 - System services: NetworkManager, UPower, BlueZ (all consumed over D-Bus).
 
 ## Install
