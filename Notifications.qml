@@ -7,8 +7,9 @@ import Quickshell.Widgets
 
 // Notification popups, replacing dunst: stacked cards in the top-right of the
 // focused monitor (approximates dunst's follow=mouse). Left-click dismisses,
-// right-click dismisses all, middle-click runs the default action. Styling
-// (offsets, padding, frame, radius, 5s timeout) mirrors the old dunstrc.
+// right-click dismisses all, middle-click runs the default action; hovering
+// the stack holds every card. Styling (offsets, padding, frame, radius, 5s
+// timeout) mirrors the old dunstrc.
 // The shell's own notifications (screenshots) skip D-Bus: notify() queues a
 // LocalNotification with the same interface the card reads off a Notification.
 Scope {
@@ -88,6 +89,9 @@ Scope {
             width: parent.width
             spacing: 8
 
+            // a card must not vanish under the cursor on its way to a button
+            HoverHandler { id: stackHover }
+
             Repeater {
                 model: cards
 
@@ -111,11 +115,13 @@ Scope {
 
                     Timer {
                         // expireTimeout is in milliseconds, -1 = sender default;
-                        // critical notifications stay until dismissed
+                        // critical notifications stay until dismissed; the
+                        // timer restarts in full once the mouse leaves
                         interval: card.modelData.expireTimeout > 0
                             ? card.modelData.expireTimeout
                             : Config.modules.notifications.timeout
                         running: card.modelData.urgency !== NotificationUrgency.Critical
+                            && !stackHover.hovered
                         onTriggered: card.modelData.expire()
                     }
 
