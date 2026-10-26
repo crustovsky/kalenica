@@ -1,11 +1,15 @@
 import QtQuick
 import Quickshell
+import Quickshell.Hyprland
 
 // Chrome shared by the anchored list popups (audio/wifi/bluetooth): window
 // anchored under its bar item, springy scale-in card, closes when the mouse
 // stays away (no HyprlandFocusGrab: it eats clicks into popup child
-// surfaces, see CLAUDE.md). Rows go in the inner Column; non-visual helpers
-// (timers, trackers) can live there too.
+// surfaces, see CLAUDE.md). `shown` is the request; the window stays mapped
+// until the close animation ends, faded compositor-side by
+// HyprlandWindow.opacity (which takes the blur along, unlike item opacity).
+// Rows go in the inner Column; non-visual helpers (timers, trackers) can
+// live there too.
 PopupWindow {
     id: root
 
@@ -13,9 +17,14 @@ PopupWindow {
     default property alias content: column.data
     // holds the popup open while the mouse is away (bluetooth scan)
     property bool holdOpen: false
+    property bool shown: false
+    property real reveal: shown ? 1 : 0
+    Behavior on reveal {
+        NumberAnimation { duration: Config.timing.popupGrow }
+    }
 
     function toggle() {
-        visible = !visible;
+        shown = !shown;
     }
 
     anchor.item: anchorItem
@@ -26,20 +35,22 @@ PopupWindow {
     color: "transparent"
     implicitWidth: 320
     implicitHeight: column.implicitHeight + 16
+    visible: shown || reveal > 0
+    HyprlandWindow.opacity: reveal
 
     Timer {
         interval: Config.timing.popupHoverClose
-        running: root.visible && !popHover.hovered && !root.holdOpen
-        onTriggered: root.visible = false
+        running: root.shown && !popHover.hovered && !root.holdOpen
+        onTriggered: root.shown = false
     }
 
     Rectangle {
         anchors.fill: parent
         radius: 8
         color: Theme.bg
-        // springy scale-in on open (window unmaps instantly on close → opening only)
+        // springy scale on open, shrink back while the window fades out
         transformOrigin: Item.Top
-        scale: root.visible ? 1 : 0.85
+        scale: root.shown ? 1 : 0.85
         Behavior on scale {
             NumberAnimation { duration: Config.timing.popupGrow; easing.type: Easing.OutBack; easing.overshoot: 1.3 }
         }

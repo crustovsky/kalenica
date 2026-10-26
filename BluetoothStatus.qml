@@ -28,7 +28,7 @@ BarItem {
             devicesPopup.toggle();
     }
     onRightClicked: {
-        devicesPopup.visible = false;
+        devicesPopup.shown = false;
         if (adapter !== null)
             adapter.enabled = false;
     }

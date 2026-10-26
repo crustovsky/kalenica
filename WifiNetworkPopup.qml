@@ -78,7 +78,7 @@ AnchoredPopup {
                     modelData.disconnect();
                 } else if (needsKey) {
                     root.passwordPrompt.ask(modelData);
-                    root.visible = false;
+                    root.shown = false;
                 } else {
                     root.failedNet = null;
                     modelData.connect();

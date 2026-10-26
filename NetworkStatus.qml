@@ -54,7 +54,7 @@ BarItem {
             wifiPopup.toggle();
     }
     onRightClicked: {
-        wifiPopup.visible = false;
+        wifiPopup.shown = false;
         Networking.wifiEnabled = false;
     }
 
