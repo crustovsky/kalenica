@@ -24,8 +24,9 @@ timings, thresholds, click commands) and applies live on save.
 ## What's in the box
 
 - **Bar**: workspaces with app icons (every monitor shows all workspaces;
-  drag an icon onto any pill to silently move the window there, right-click
-  a foreign pill to pull that workspace over), active window title, mpris
+  scroll to walk this monitor's, drag an icon onto any pill to silently move
+  the window there, right-click a foreign pill to pull that workspace
+  over), active window title, mpris
   media, monochrome tray, CPU / memory / network / bluetooth / battery /
   audio / backlight modules with hover tooltips, clock with calendar popup
   (ISO weeks, scroll to flip months), power menu with confirm dialogs.

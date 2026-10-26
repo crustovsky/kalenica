@@ -8,9 +8,10 @@ import Quickshell.Widgets
 // Workspace pills with the workspace number and the icons of its windows.
 // Every workspace is shown; ones living on another monitor are dimmed.
 // Click a pill to switch workspace, click an icon to focus that window,
-// middle-click an icon to close it. Drag an icon onto a pill to silently
-// move the window there; right-click a dimmed pill to pull that workspace
-// onto this monitor.
+// middle-click an icon to close it; scrolling over the pills walks this
+// monitor's workspaces. Drag an icon onto a pill to silently move the
+// window there; right-click a dimmed pill to pull that workspace onto this
+// monitor.
 Row {
     id: root
 
@@ -165,6 +166,14 @@ Row {
                     if (w !== null)
                         Hyprland.dispatch(`hl.dsp.window.move({ workspace = ${group.modelData.id}, follow = false, window = "address:0x${w.address}" })`);
                 }
+            }
+
+            // m±1: open workspaces on this monitor, i.e. the undimmed pills
+            WheelArea {
+                anchors.fill: parent
+                z: -1
+                onStepped: steps => Hyprland.dispatch(
+                    `hl.dsp.focus({ workspace = "${steps > 0 ? "m-1" : "m+1"}" })`)
             }
 
             MouseArea {

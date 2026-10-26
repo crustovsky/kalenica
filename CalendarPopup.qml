@@ -40,8 +40,8 @@ PopupWindow {
         return 1 + Math.round(((t - week1) / 86400000 - 3 + (week1.getUTCDay() + 6) % 7) / 7);
     }
 
-    function flip(delta) {
-        offset += delta > 0 ? -1 : 1; // scroll up = back in time
+    function flip(steps) {
+        offset -= steps; // scroll up = back in time
     }
 
     readonly property bool wanted: anchorHovered || popHover.hovered
@@ -94,10 +94,9 @@ PopupWindow {
 
         HoverHandler { id: popHover }
 
-        MouseArea {
+        WheelArea {
             anchors.fill: parent
-            acceptedButtons: Qt.NoButton
-            onWheel: wheel => root.flip(wheel.angleDelta.y)
+            onStepped: steps => root.flip(steps)
         }
 
         Column {

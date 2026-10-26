@@ -14,7 +14,7 @@ Rectangle {
     signal clicked()
     signal rightClicked()
     signal middleClicked()
-    signal scrolled(real delta)
+    signal scrolled(int steps)
 
     readonly property bool hovered: mouse.containsMouse
     readonly property color fg: hovered ? Theme.fgHover : Theme.fg
@@ -62,7 +62,13 @@ Rectangle {
             else
                 root.middleClicked();
         }
-        onWheel: wheel => root.scrolled(wheel.angleDelta.y / 120)
+    }
+
+    // on top of the click area (no buttons, so presses fall through to it)
+    WheelArea {
+        anchors.fill: parent
+        z: -1
+        onStepped: steps => root.scrolled(steps)
     }
 
     property bool showTip: false

@@ -4,6 +4,7 @@ singleton Screens 1.0 Screens.qml
 singleton Idle 1.0 Idle.qml
 singleton AppIcon 1.0 AppIcon.qml
 PressPulse 1.0 PressPulse.qml
+WheelArea 1.0 WheelArea.qml
 AnchoredPopup 1.0 AnchoredPopup.qml
 PopupRow 1.0 PopupRow.qml
 DialogButton 1.0 DialogButton.qml
