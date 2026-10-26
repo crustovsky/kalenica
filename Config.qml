@@ -97,6 +97,12 @@ Singleton {
         property list<string> rightClickCommand: ["kitty", "--class", "Cava", "cava"]
     }
 
+    // players whose identity contains one of these (case-insensitive) are
+    // never shown: browsers announce every tab with a video
+    component MediaConfig: JsonObject {
+        property list<string> exclude: ["vivaldi"]
+    }
+
     // Seconds of no input (0 = off): barDim fades the bar content to
     // barDimOpacity (OLED care, ignores idle inhibitors: a movie is no reason
     // to let the bar burn in); brightnessDim takes the panels to
@@ -120,6 +126,7 @@ Singleton {
         property CpuConfig cpu: CpuConfig {}
         property MemoryConfig memory: MemoryConfig {}
         property AudioConfig audio: AudioConfig {}
+        property MediaConfig media: MediaConfig {}
         property IdleConfig idle: IdleConfig {}
     }
 

@@ -9,7 +9,14 @@ import Quickshell.Io
 ShellRoot {
     id: root
 
-    property bool barVisible: true
+    property alias barVisible: persist.barVisible
+
+    // toggles that must survive a config reload (editing any .qml file)
+    PersistentProperties {
+        id: persist
+        reloadableId: "shell"
+        property bool barVisible: true
+    }
 
     Variants {
         model: Quickshell.screens
@@ -18,12 +25,26 @@ ShellRoot {
         }
     }
 
+    // qs ipc call notifications dnd
     Notifications {
         id: notifications
+        osd: osd
     }
 
     Osd {
         id: osd
+    }
+
+    // one critical-battery card, not one per bar (Battery is per monitor),
+    // through the shell's own daemon rather than a notify-send round trip
+    Connections {
+        target: BatteryState
+
+        function onCriticalChanged() {
+            if (BatteryState.critical)
+                notifications.notify("Battery critical",
+                    `${BatteryState.pct}% remaining`, "", [], true);
+        }
     }
 
     BrightnessControl {

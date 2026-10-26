@@ -36,7 +36,7 @@ AnchoredPopup {
                     Pipewire.preferredDefaultAudioSink = row.modelData;
                 else
                     Pipewire.preferredDefaultAudioSource = row.modelData;
-                root.visible = false;
+                root.shown = false;
             }
         }
     }

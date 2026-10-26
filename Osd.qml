@@ -13,20 +13,15 @@ import Quickshell.Services.Pipewire
 Scope {
     id: root
 
-    readonly property var audio: Pipewire.defaultAudioSink?.audio ?? null
+    readonly property var sink: Pipewire.defaultAudioSink
+    readonly property var audio: sink?.audio ?? null
     readonly property real vol: audio !== null ? audio.volume : -1
     readonly property bool muted: audio !== null && audio.muted
 
-    readonly property var micAudio: Pipewire.defaultAudioSource?.audio ?? null
+    readonly property var source: Pipewire.defaultAudioSource
+    readonly property var micAudio: source?.audio ?? null
     readonly property real micVol: micAudio !== null ? micAudio.volume : -1
     readonly property bool micMuted: micAudio !== null && micAudio.muted
-
-    // Pipewire populates asynchronously after startup; -1 means "no baseline
-    // yet" so the initial snapshot doesn't flash the OSD on login.
-    property real lastVol: -1
-    property int lastMuted: -1
-    property real lastMicVol: -1
-    property int lastMicMuted: -1
 
     property string icon
     property real value
@@ -37,7 +32,22 @@ Scope {
     // (brightness targets the monitor under the cursor)
     property string screenOverride: ""
 
-    PwObjectTracker { objects: [Pipewire.defaultAudioSink, Pipewire.defaultAudioSource] }
+    PwObjectTracker { objects: [root.sink, root.source] }
+
+    // A node's volume lands before its `ready` sync completes, so the guard
+    // swallows the population burst (login, a new default device); and a
+    // retargeted Connections doesn't emit, so switching sinks stays quiet.
+    Connections {
+        target: root.audio
+        function onVolumesChanged() { if (root.sink.ready) root.showVolume(); }
+        function onMutedChanged() { if (root.sink.ready) root.showVolume(); }
+    }
+
+    Connections {
+        target: root.micAudio
+        function onVolumesChanged() { if (root.source.ready) root.showMic(); }
+        function onMutedChanged() { if (root.source.ready) root.showMic(); }
+    }
 
     function show(icon: string, value: real, dimmed: bool) {
         showOn("", icon, value, dimmed);
@@ -69,57 +79,6 @@ Scope {
 
     function showMic() {
         show(micMuted ? "󰍭" : "󰍬", micVol, micMuted);
-    }
-
-    // muted is false both before and usually after the async Pipewire
-    // population, so onMutedChanged never fires to set the baseline —
-    // without this, the first mute toggle after startup shows no OSD.
-    onAudioChanged: {
-        if (audio !== null && lastMuted < 0)
-            lastMuted = muted ? 1 : 0;
-    }
-
-    onMicAudioChanged: {
-        if (micAudio !== null && lastMicMuted < 0)
-            lastMicMuted = micMuted ? 1 : 0;
-    }
-
-    onVolChanged: {
-        if (vol < 0)
-            return;
-        const last = lastVol;
-        lastVol = vol;
-        if (last >= 0 && Math.abs(vol - last) > 0.0001)
-            showVolume();
-    }
-
-    onMutedChanged: {
-        if (audio === null)
-            return;
-        const m = muted ? 1 : 0;
-        const last = lastMuted;
-        lastMuted = m;
-        if (last >= 0 && m !== last)
-            showVolume();
-    }
-
-    onMicVolChanged: {
-        if (micVol < 0)
-            return;
-        const last = lastMicVol;
-        lastMicVol = micVol;
-        if (last >= 0 && Math.abs(micVol - last) > 0.0001)
-            showMic();
-    }
-
-    onMicMutedChanged: {
-        if (micAudio === null)
-            return;
-        const m = micMuted ? 1 : 0;
-        const last = lastMicMuted;
-        lastMicMuted = m;
-        if (last >= 0 && m !== last)
-            showMic();
     }
 
     // Kbd backlight: the non-consuming keybind calls `qs ipc call osd kbdlight`.
@@ -171,6 +130,7 @@ Scope {
         exclusionMode: ExclusionMode.Normal
         exclusiveZone: 0
         WlrLayershell.layer: WlrLayer.Overlay
+        WlrLayershell.namespace: "kalenica-osd"
         color: "transparent"
         implicitWidth: card.implicitWidth
         implicitHeight: card.implicitHeight

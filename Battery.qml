@@ -1,27 +1,16 @@
 import QtQuick
-import Quickshell
-import Quickshell.Services.UPower
 
+// Battery readout; the state (and the critical alert) lives in BatteryState.
 BarItem {
     id: root
     clickable: false
 
-    readonly property var device: UPower.displayDevice
-    readonly property int pct: Math.round(device.percentage * 100)
-    // Treat full-and-plugged like waybar's "plugged" state (same plug icon).
-    readonly property bool charging: device.state === UPowerDeviceState.Charging
-        || device.state === UPowerDeviceState.PendingCharge
-        || device.state === UPowerDeviceState.FullyCharged
+    readonly property var device: BatteryState.device
+    readonly property int pct: BatteryState.pct
+    readonly property bool charging: BatteryState.charging
+    readonly property bool low: BatteryState.low
+    readonly property bool critical: BatteryState.critical
     readonly property var icons: ["󰂃", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"]
-    // pct > 0 skips the transient 0% while UPower populates at startup
-    readonly property bool low: pct > 0 && pct <= Config.modules.battery.low && !charging
-    readonly property bool critical: pct > 0 && pct <= Config.modules.battery.critical && !charging
-
-    onCriticalChanged: {
-        if (critical)
-            Quickshell.execDetached(["notify-send", "-u", "critical", "-a", "battery",
-                "Battery critical", `${pct}% remaining`]);
-    }
 
     visible: device !== null && device.isPresent
 

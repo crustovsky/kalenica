@@ -1,13 +1,31 @@
 import QtQuick
 import Quickshell.Services.Mpris
 
+// Mpris line for one player: the one playing wins; with none playing it
+// stays on the last one shown, so two paused players don't flip-flop.
+// modules.media.exclude hides players by identity substring (browsers).
 BarItem {
     id: root
 
-    readonly property var player: Mpris.players.values.find(
-        p => !(p.identity ?? "").toLowerCase().includes("vivaldi")) ?? null
+    readonly property var players: Mpris.players.values.filter(p =>
+        !Config.modules.media.exclude.some(x =>
+            (p.identity ?? "").toLowerCase().includes(x.toLowerCase())))
+    // reading isPlaying inside the binding re-runs it on any state change
+    readonly property var playing: players.find(p => p.isPlaying) ?? null
+    property var player: null
     readonly property string line: player !== null
         ? [player.trackArtist, player.trackTitle].filter(s => s !== "").join(" - ") : ""
+
+    function pick() {
+        if (playing !== null)
+            player = playing;
+        else if (!players.includes(player))
+            player = players[0] ?? null;
+    }
+    // initial bindings don't signal: pick once players exist at startup
+    Component.onCompleted: pick()
+    onPlayingChanged: pick()
+    onPlayersChanged: pick()
 
     visible: player !== null && player.playbackState !== MprisPlaybackState.Stopped
     tooltip: line

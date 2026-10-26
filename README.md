@@ -24,8 +24,9 @@ timings, thresholds, click commands) and applies live on save.
 ## What's in the box
 
 - **Bar**: workspaces with app icons (every monitor shows all workspaces;
-  drag an icon onto any pill to silently move the window there, right-click
-  a foreign pill to pull that workspace over), active window title, mpris
+  scroll to walk this monitor's, drag an icon onto any pill to silently move
+  the window there, right-click a foreign pill to pull that workspace
+  over), active window title, mpris
   media, monochrome tray, CPU / memory / network / bluetooth / battery /
   audio / backlight modules with hover tooltips, clock with calendar popup
   (ISO weeks, scroll to flip months), power menu with confirm dialogs.
@@ -33,7 +34,9 @@ timings, thresholds, click commands) and applies live on save.
   connect, password prompt for new secured networks, right-click the icon
   for radio off), bluetooth devices incl. scan/pair mode.
 - **Notifications**: a full `org.freedesktop.Notifications` daemon:
-  cards with icons and action buttons, critical urgency never auto-expires.
+  cards with icons and action buttons, critical urgency never auto-expires,
+  hovering the stack holds the cards, a fullscreen window covers them
+  (Top layer, not Overlay), do not disturb over IPC queues them.
 
   ![notification](assets/notification.png)
 - **OSD**: volume, microphone, screen and keyboard backlight, plus a text
@@ -72,7 +75,7 @@ whatever commands you configure).
   glyphs.
 - CLI tools: `wpctl` (WirePlumber) for audio, `brightnessctl` for internal
   backlights, `ddcutil` for external-monitor brightness over DDC/CI,
-  `wl-copy` for screenshot clipboard, `notify-send` (libnotify).
+  `wl-copy` for screenshot clipboard.
 - System services: NetworkManager, UPower, BlueZ (all consumed over D-Bus).
 
 ## Install
@@ -88,8 +91,9 @@ Run it with `qs`, or as a systemd user service bound to the session
 systemctl --user enable --now quickshell.service
 ```
 
-Hyprland integration (the blur layer rule and the keybinds that drive the
-IPC entry points) is in [`examples/hyprland.lua`](examples/hyprland.lua),
+Hyprland integration (the blur layer rule, one per surface kind via the
+`kalenica-*` layer namespaces, and the keybinds that drive the IPC entry
+points) is in [`examples/hyprland.lua`](examples/hyprland.lua),
 a matching hypridle setup (lock/screen-off/suspend only; the shell does the
 idle dim itself) in [`examples/hypridle.conf`](examples/hypridle.conf).
 
@@ -121,6 +125,7 @@ On first run a `config.json` with the defaults below is created next to
 | `modules.cpu.clickCommand` | `["resources"]` | CPU module click |
 | `modules.memory.clickCommand` | `["kitty", "--class", "btop", "btop"]` | memory module click |
 | `modules.audio.rightClickCommand` | `["kitty", "--class", "Cava", "cava"]` | volume module right-click |
+| `modules.media.exclude` | `["vivaldi"]` | mpris players hidden by identity substring |
 | `modules.idle.barDim` / `.barDimOpacity` | `45` / `0.3` | s of no input before the bar content fades, and to what (0 = never; needs `theme.oled`) |
 | `modules.idle.brightnessDim` / `.brightnessDimLevel` | `150` / `10` | s of no input before the panels dim, and to what % (0 = never) |
 
@@ -136,6 +141,7 @@ Everything interactive that a keybind should reach goes through `qs ipc`:
 | `qs ipc call brightness raise` / `lower` | screen brightness + OSD |
 | `qs ipc call osd kbdlight` | keyboard backlight OSD |
 | `qs ipc call osd text <icon> <text>` | one-line toast on the OSD card (scale/layout cyclers) |
+| `qs ipc call notifications dnd` | toggle do not disturb (cards queue, shown when it ends) |
 | `qs ipc call screenshot screen` / `active` / `area` | screenshots |
 | `qs ipc call expo toggle` | window switcher |
 
