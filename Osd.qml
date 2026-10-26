@@ -15,13 +15,9 @@ Scope {
 
     readonly property var sink: Pipewire.defaultAudioSink
     readonly property var audio: sink?.audio ?? null
-    readonly property real vol: audio !== null ? audio.volume : -1
-    readonly property bool muted: audio !== null && audio.muted
 
     readonly property var source: Pipewire.defaultAudioSource
     readonly property var micAudio: source?.audio ?? null
-    readonly property real micVol: micAudio !== null ? micAudio.volume : -1
-    readonly property bool micMuted: micAudio !== null && micAudio.muted
 
     property string icon
     property real value
@@ -71,14 +67,18 @@ Scope {
         hideTimer.restart();
     }
 
+    // Read the node directly: the Connections handlers above run before
+    // this object's vol/muted bindings re-evaluate, so those still hold the
+    // previous value (the OSD showed the old mute state).
     function showVolume() {
-        const icon = muted ? "󰝟"
-            : vol < 0.33 ? "󰕿" : vol < 0.66 ? "󰖀" : "󰕾";
-        show(icon, vol, muted);
+        const v = audio.volume, m = audio.muted;
+        const icon = m ? "󰝟"
+            : v < 0.33 ? "󰕿" : v < 0.66 ? "󰖀" : "󰕾";
+        show(icon, v, m);
     }
 
     function showMic() {
-        show(micMuted ? "󰍭" : "󰍬", micVol, micMuted);
+        show(micAudio.muted ? "󰍭" : "󰍬", micAudio.volume, micAudio.muted);
     }
 
     // Kbd backlight: the non-consuming keybind calls `qs ipc call osd kbdlight`.

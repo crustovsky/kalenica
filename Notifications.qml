@@ -3,6 +3,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Wayland
 import Quickshell.Services.Notifications
+import Quickshell.Io
 import Quickshell.Widgets
 
 // Notification popups, replacing dunst: stacked cards in the top-right of the
