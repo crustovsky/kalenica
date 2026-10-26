@@ -121,6 +121,7 @@ On first run a `config.json` with the defaults below is created next to
 | `modules.cpu.clickCommand` | `["resources"]` | CPU module click |
 | `modules.memory.clickCommand` | `["kitty", "--class", "btop", "btop"]` | memory module click |
 | `modules.audio.rightClickCommand` | `["kitty", "--class", "Cava", "cava"]` | volume module right-click |
+| `modules.media.exclude` | `["vivaldi"]` | mpris players hidden by identity substring |
 | `modules.idle.barDim` / `.barDimOpacity` | `45` / `0.3` | s of no input before the bar content fades, and to what (0 = never; needs `theme.oled`) |
 | `modules.idle.brightnessDim` / `.brightnessDimLevel` | `150` / `10` | s of no input before the panels dim, and to what % (0 = never) |
 
