@@ -11,7 +11,7 @@ import Quickshell.Widgets
 // middle-click an icon to close it; scrolling over the pills walks this
 // monitor's workspaces. Drag an icon onto a pill to silently move the
 // window there; right-click a dimmed pill to pull that workspace onto this
-// monitor.
+// monitor (focus stays where it was).
 Row {
     id: root
 
@@ -185,8 +185,25 @@ Row {
                 onClicked: mouse => {
                     if (mouse.button === Qt.RightButton) {
                         // foreign is also true while root.screen is null (monitor teardown)
-                        if (group.foreign && root.screen !== null)
+                        if (group.foreign && root.screen !== null) {
+                            // workspace.move alone parks the workspace here without
+                            // showing it, and an empty one then gets dropped as unused
+                            // (7 "turned into" 9). Hyprland's own pull (focus with
+                            // on_current_monitor) shows it but swaps active workspaces
+                            // when it was showing on the other monitor, which flips
+                            // both screens. So: move (the old monitor fills its gap
+                            // from its own workspaces), focus it here (recreating it
+                            // under the same number if it was dropped), then hand focus
+                            // back; with follow_mouse = 0 the focused monitor is usually
+                            // not this screen, and a pull must not read as a switch.
+                            const prev = Hyprland.focusedMonitor;
+                            const prevName = prev !== null ? prev.name : null;
                             Hyprland.dispatch(`hl.dsp.workspace.move({ workspace = ${group.modelData.id}, monitor = "${root.screen.name}" })`);
+                            Hyprland.dispatch(`hl.dsp.focus({ monitor = "${root.screen.name}" })`);
+                            Hyprland.dispatch(`hl.dsp.focus({ workspace = ${group.modelData.id} })`);
+                            if (prevName !== null && prevName !== root.screen.name)
+                                Hyprland.dispatch(`hl.dsp.focus({ monitor = "${prevName}" })`);
+                        }
                     } else {
                         group.modelData.activate();
                     }
