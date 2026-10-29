@@ -11,7 +11,7 @@ import Quickshell.Widgets
 // middle-click an icon to close it; scrolling over the pills walks this
 // monitor's workspaces. Drag an icon onto a pill to silently move the
 // window there; right-click a dimmed pill to pull that workspace onto this
-// monitor and switch to it.
+// monitor (focus stays where it was).
 Row {
     id: root
 
@@ -193,9 +193,15 @@ Row {
                             // own pull activates it (or swaps active workspaces
                             // when it was showing on the old monitor), so nothing
                             // gets renumbered. It acts on the focused monitor,
-                            // hence the explicit monitor focus first.
+                            // hence the explicit monitor focus first; with
+                            // follow_mouse = 0 that is often not this screen,
+                            // so hand focus back afterwards: pull, don't switch.
+                            const prev = Hyprland.focusedMonitor;
+                            const prevName = prev !== null ? prev.name : null;
                             Hyprland.dispatch(`hl.dsp.focus({ monitor = "${root.screen.name}" })`);
                             Hyprland.dispatch(`hl.dsp.focus({ workspace = ${group.modelData.id}, on_current_monitor = true })`);
+                            if (prevName !== null && prevName !== root.screen.name)
+                                Hyprland.dispatch(`hl.dsp.focus({ monitor = "${prevName}" })`);
                         }
                     } else {
                         group.modelData.activate();
