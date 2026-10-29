@@ -11,7 +11,7 @@ import Quickshell.Widgets
 // middle-click an icon to close it; scrolling over the pills walks this
 // monitor's workspaces. Drag an icon onto a pill to silently move the
 // window there; right-click a dimmed pill to pull that workspace onto this
-// monitor.
+// monitor and switch to it.
 Row {
     id: root
 
@@ -185,8 +185,18 @@ Row {
                 onClicked: mouse => {
                     if (mouse.button === Qt.RightButton) {
                         // foreign is also true while root.screen is null (monitor teardown)
-                        if (group.foreign && root.screen !== null)
-                            Hyprland.dispatch(`hl.dsp.workspace.move({ workspace = ${group.modelData.id}, monitor = "${root.screen.name}" })`);
+                        if (group.foreign && root.screen !== null) {
+                            // a bare workspace.move parks the workspace on this
+                            // monitor without activating it: if it is empty Hyprland
+                            // drops it as unused and the old monitor gets a fresh
+                            // number to plug its gap (7 "turned into" 9). Hyprland's
+                            // own pull activates it (or swaps active workspaces
+                            // when it was showing on the old monitor), so nothing
+                            // gets renumbered. It acts on the focused monitor,
+                            // hence the explicit monitor focus first.
+                            Hyprland.dispatch(`hl.dsp.focus({ monitor = "${root.screen.name}" })`);
+                            Hyprland.dispatch(`hl.dsp.focus({ workspace = ${group.modelData.id}, on_current_monitor = true })`);
+                        }
                     } else {
                         group.modelData.activate();
                     }
