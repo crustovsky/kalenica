@@ -11,7 +11,8 @@ import Quickshell.Widgets
 // middle-click an icon to close it; scrolling over the pills walks this
 // monitor's workspaces. Drag an icon onto a pill to silently move the
 // window there; right-click a dimmed pill to pull that workspace onto this
-// monitor (focus stays where it was).
+// monitor, or right-click an empty pill on any monitor to close that
+// workspace (focus stays where it was either way).
 Row {
     id: root
 
@@ -23,6 +24,23 @@ Row {
     property Item ghost: null
 
     height: parent ? parent.height : undefined
+
+    // what ws's monitor should show once ws is gone: the nearest lower number
+    // among that monitor's other workspaces, else the nearest higher; null when
+    // ws is the only one there (a monitor always shows something)
+    function closeTarget(ws: var): var {
+        let lower = null;
+        let higher = null;
+        for (const w of Hyprland.workspaces.values) {
+            if (w.id <= 0 || w.id === ws.id || w.monitor === null || w.monitor.name !== ws.monitor.name)
+                continue;
+            if (w.id < ws.id && (lower === null || w.id > lower))
+                lower = w.id;
+            if (w.id > ws.id && (higher === null || w.id < higher))
+                higher = w.id;
+        }
+        return lower !== null ? lower : higher;
+    }
     spacing: 4
 
     Component {
@@ -183,29 +201,45 @@ Row {
                 acceptedButtons: Qt.LeftButton | Qt.RightButton
                 onPressed: pillPulse.restart()
                 onClicked: mouse => {
-                    if (mouse.button === Qt.RightButton) {
-                        // foreign is also true while root.screen is null (monitor teardown)
-                        if (group.foreign && root.screen !== null) {
-                            // workspace.move alone parks the workspace here without
-                            // showing it, and an empty one then gets dropped as unused
-                            // (7 "turned into" 9). Hyprland's own pull (focus with
-                            // on_current_monitor) shows it but swaps active workspaces
-                            // when it was showing on the other monitor, which flips
-                            // both screens. So: move (the old monitor fills its gap
-                            // from its own workspaces), focus it here (recreating it
-                            // under the same number if it was dropped), then hand focus
-                            // back; with follow_mouse = 0 the focused monitor is usually
-                            // not this screen, and a pull must not read as a switch.
-                            const prev = Hyprland.focusedMonitor;
-                            const prevName = prev !== null ? prev.name : null;
-                            Hyprland.dispatch(`hl.dsp.workspace.move({ workspace = ${group.modelData.id}, monitor = "${root.screen.name}" })`);
-                            Hyprland.dispatch(`hl.dsp.focus({ monitor = "${root.screen.name}" })`);
-                            Hyprland.dispatch(`hl.dsp.focus({ workspace = ${group.modelData.id} })`);
-                            if (prevName !== null && prevName !== root.screen.name)
-                                Hyprland.dispatch(`hl.dsp.focus({ monitor = "${prevName}" })`);
-                        }
-                    } else {
+                    if (mouse.button !== Qt.RightButton) {
                         group.modelData.activate();
+                        return;
+                    }
+                    // with follow_mouse = 0 the focused monitor is usually not
+                    // this screen, and neither a close nor a pull must read as
+                    // a switch: hand focus back afterwards
+                    const prev = Hyprland.focusedMonitor;
+                    const prevName = prev !== null ? prev.name : null;
+                    const mon = group.modelData.monitor;
+                    if (group.modelData.toplevels.values.length === 0) {
+                        // Hyprland has no close-workspace dispatcher, but an
+                        // empty workspace only exists while a monitor shows it:
+                        // switch its monitor to another of its own workspaces
+                        // and Hyprland drops it. Nothing to switch to when it is
+                        // the only one on that monitor.
+                        const next = mon !== null ? root.closeTarget(group.modelData) : null;
+                        if (next === null)
+                            return;
+                        Hyprland.dispatch(`hl.dsp.focus({ monitor = "${mon.name}" })`);
+                        Hyprland.dispatch(`hl.dsp.focus({ workspace = ${next} })`);
+                        if (prevName !== null && prevName !== mon.name)
+                            Hyprland.dispatch(`hl.dsp.focus({ monitor = "${prevName}" })`);
+                    // foreign is also true while root.screen is null (monitor teardown)
+                    } else if (group.foreign && root.screen !== null) {
+                        // workspace.move alone parks the workspace here without
+                        // showing it, and an empty one then gets dropped as unused
+                        // (7 "turned into" 9). Hyprland's own pull (focus with
+                        // on_current_monitor) shows it but swaps active workspaces
+                        // when it was showing on the other monitor, which flips
+                        // both screens. So: move (the old monitor fills its gap
+                        // from its own workspaces), focus it here (recreating it
+                        // under the same number if it was dropped), then hand
+                        // focus back.
+                        Hyprland.dispatch(`hl.dsp.workspace.move({ workspace = ${group.modelData.id}, monitor = "${root.screen.name}" })`);
+                        Hyprland.dispatch(`hl.dsp.focus({ monitor = "${root.screen.name}" })`);
+                        Hyprland.dispatch(`hl.dsp.focus({ workspace = ${group.modelData.id} })`);
+                        if (prevName !== null && prevName !== root.screen.name)
+                            Hyprland.dispatch(`hl.dsp.focus({ monitor = "${prevName}" })`);
                     }
                 }
             }
