@@ -1,6 +1,7 @@
 pragma ComponentBehavior: Bound
 import QtQuick
 import Quickshell.Bluetooth
+import Quickshell.Io
 
 // Anchored device list for the bluetooth bar item (replaces the vicinae
 // bluetooth extension): paired devices, click connects/disconnects. The
@@ -42,7 +43,8 @@ AnchoredPopup {
             const dev = root.pendingDevice;
             if (dev.paired) {
                 dev.trusted = true;
-                dev.connect();
+                if (!dev.connected)
+                    dev.connect();
                 root.pendingDevice = null;
                 if (root.adapter !== null)
                     root.adapter.discovering = false;
@@ -56,6 +58,16 @@ AnchoredPopup {
                 failedTimer.start();
             }
         }
+    }
+
+    // BlueZ refuses a just-works confirmation when no pairing agent is on
+    // the bus ("No agent available for request type 2"), and Quickshell
+    // registers none. bluetoothctl provides one for as long as its stdin
+    // stays open; it is never asked anything for a pairing we initiate.
+    Process {
+        running: root.visible
+        command: ["bluetoothctl", "--agent", "NoInputNoOutput"]
+        stdinEnabled: true
     }
 
     Timer {
