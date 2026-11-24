@@ -115,6 +115,12 @@ Singleton {
         property int brightnessDimLevel: 10
     }
 
+    // State file written by a dictation tool, see Dictate.qml; empty means
+    // $XDG_RUNTIME_DIR/dictate/state
+    component DictateConfig: JsonObject {
+        property string stateFile: ""
+    }
+
     component ModulesConfig: JsonObject {
         property ClockConfig clock: ClockConfig {}
         property BatteryConfig battery: BatteryConfig {}
@@ -128,6 +134,7 @@ Singleton {
         property AudioConfig audio: AudioConfig {}
         property MediaConfig media: MediaConfig {}
         property IdleConfig idle: IdleConfig {}
+        property DictateConfig dictate: DictateConfig {}
     }
 
     FileView {
