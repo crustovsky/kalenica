@@ -29,7 +29,8 @@ timings, thresholds, click commands) and applies live on save.
   over, right-click an empty pill on either monitor to close it), active
   window title, mpris
   media, monochrome tray, CPU / memory / network / bluetooth / battery /
-  audio / backlight modules with hover tooltips, clock with calendar popup
+  audio / backlight modules with hover tooltips, a dictation indicator,
+  clock with calendar popup
   (ISO weeks, scroll to flip months), power menu with confirm dialogs.
 - **Popups**: audio output/input switcher, wifi network list (native
   connect, password prompt for new secured networks, right-click the icon
@@ -129,6 +130,7 @@ On first run a `config.json` with the defaults below is created next to
 | `modules.media.exclude` | `["vivaldi"]` | mpris players hidden by identity substring |
 | `modules.idle.barDim` / `.barDimOpacity` | `45` / `0.3` | s of no input before the bar content fades, and to what (0 = never; needs `theme.oled`) |
 | `modules.idle.brightnessDim` / `.brightnessDimLevel` | `150` / `10` | s of no input before the panels dim, and to what % (0 = never) |
+| `modules.dictate.stateFile` | `""` | state file of a dictation tool (`idle`, `recording` or `transcribing`, plus an optional label); empty means `$XDG_RUNTIME_DIR/dictate/state` |
 
 Animation shapes, layout and geometry are not configurable on purpose.
 

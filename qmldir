@@ -24,6 +24,7 @@ BluetoothStatus 1.0 BluetoothStatus.qml
 ClockItem 1.0 ClockItem.qml
 ConfirmDialog 1.0 ConfirmDialog.qml
 Cpu 1.0 Cpu.qml
+Dictate 1.0 Dictate.qml
 Drawer 1.0 Drawer.qml
 Expo 1.0 Expo.qml
 GroupedWorkspaces 1.0 GroupedWorkspaces.qml

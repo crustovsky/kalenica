@@ -45,11 +45,21 @@ PanelWindow {
         }
 
         ActiveWindow {
+            id: activeWindow
             anchors.centerIn: parent
-            // never overlap the side sections, like waybar's box layout
-            maxWidth: Math.max(0, 2 * Math.min(
+            // never overlap the side sections, like waybar's box layout;
+            // the dictation indicator takes its room out of the title
+            maxWidth: Math.max(0, 2 * (Math.min(
                 bar.width / 2 - (leftRow.x + leftRow.width) - 16,
-                rightRow.x - bar.width / 2 - 16))
+                rightRow.x - bar.width / 2 - 16)
+                - (dictate.visible ? dictate.width + 4 : 0)))
+        }
+
+        // next to the title of the window the dictated text goes into
+        Dictate {
+            id: dictate
+            anchors.right: activeWindow.left
+            anchors.rightMargin: 4
         }
 
         Row {
